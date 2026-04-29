@@ -6,6 +6,7 @@
 #include "Common/TcpSocketBuilder.h"
 #include "Serialization/ArrayWriter.h"
 #include "SocketSubsystem.h"
+#include "PacketSession.h"
 
 void UClientGameInstance::ConnectToGameServer()
 {
@@ -18,14 +19,17 @@ void UClientGameInstance::ConnectToGameServer()
 	InternetAddr->SetIp(Ip.Value);
 	InternetAddr->SetPort(Port);
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Connecting To Server"));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Connecting To Server"));
 
 	bool Connected = Socket->Connect(*InternetAddr);
 
 	if (Connected)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Connection Successed"));
+		// 연결 성공하면 GameServerSession 만들고, 쓰레드 파서 패킷 처리 시작
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Connection Successed"));
 		// Session 
+		GameServerSession = MakeShared<PacketSession>(Socket);
+		GameServerSession->Run();
 	}
 	else
 	{
@@ -41,4 +45,19 @@ void UClientGameInstance::DisconnectFromGameServer()
 		SocketSubsystem->DestroySocket(Socket);
 		Socket = nullptr;
 	}
+}
+
+void UClientGameInstance::HandleRecvPackets()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+	GameServerSession->HandleRecvPackets();
+}
+
+void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	GameServerSession->SendPacket(SendBuffer);
 }

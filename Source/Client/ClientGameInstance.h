@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Client.h"
 #include "Engine/GameInstance.h"
 #include "ClientGameInstance.generated.h"
 
-/**
- * 
- */
+class FSocket;
+class PacketSession;
+
 UCLASS()
 class CLIENT_API UClientGameInstance : public UGameInstance
 {
@@ -21,8 +22,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DisconnectFromGameServer();
 
+	UFUNCTION(BlueprintCallable)
+	void HandleRecvPackets();
+	
+	void SendPacket(SendBufferRef SendBuffer);
+	
 public:
-	class FSocket* Socket;
+	FSocket* Socket;
 	FString IpAddress = TEXT("127.0.0.1");
 	int16 Port = 7777;
+	
+	TSharedPtr<PacketSession> GameServerSession;
 };

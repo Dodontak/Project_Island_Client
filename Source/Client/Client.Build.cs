@@ -15,7 +15,7 @@ public class Client : ModuleRules
     			"InputCore",
     			"EnhancedInput",
 			    "Sockets",
-			    "Networking"
+			    "Networking"	
     		});
     
     		PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });
