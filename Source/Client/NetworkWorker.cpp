@@ -44,7 +44,9 @@ uint32 RecvWorker::Run()
 	return 0;
 }
 
-void RecvWorker::Exit() {}
+void RecvWorker::Exit()
+{
+}
 
 bool RecvWorker::ReceiveDesiredBytes(uint8* Results, int32 Size)
 {
@@ -65,7 +67,7 @@ bool RecvWorker::ReceiveDesiredBytes(uint8* Results, int32 Size)
 		Offset += NumRead;
 		Size -= NumRead;
 	}
-	
+
 	return true;
 }
 
@@ -85,8 +87,8 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 		return false;
 	//Id, Size 추출
 	FPacketHeader Header;
-	
-	
+
+
 	{
 		FMemoryReader Reader(HeaderBuffer);
 		Reader << Header;
@@ -137,7 +139,8 @@ uint32 SendWorker::Run()
 		{
 			if (Session->SendPacketQueue.Dequeue(OUT SendBuffer))
 			{
-				SendPacket(SendBuffer);
+				bool status = SendPacket(SendBuffer);
+
 			}
 		}
 		// Sleep?
@@ -145,10 +148,13 @@ uint32 SendWorker::Run()
 	return 0;
 }
 
-void SendWorker::Exit() {}
+void SendWorker::Exit()
+{
+}
 
 bool SendWorker::SendPacket(SendBufferRef SendBuffer)
 {
+	
 	if (SendDesiredBytes(SendBuffer->GetBuffer(), SendBuffer->GetDataLen()) == false)
 		return false;
 	return true;
@@ -166,7 +172,7 @@ bool SendWorker::SendDesiredBytes(const uint8* Buffer, int32 Size)
 		int32 BytesSent = 0;
 		if (Socket->Send(Buffer, Size, BytesSent) == false)
 			return false;
-
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Send %i"), BytesSent));
 		Size -= BytesSent;
 		Buffer += BytesSent;
 	}

@@ -4,6 +4,7 @@
 #include "PacketSession.h"
 #include "NetworkWorker.h"
 #include "Protocol.pb.h"
+#include "ServerPacketHandler.h"
 
 PacketSession::PacketSession(class FSocket* Socket) : Socket(Socket)
 {
@@ -27,7 +28,7 @@ void PacketSession::Disconnect()
 		RecvWorkerThread->Destroy();
 		RecvWorkerThread = nullptr;
 	}
-	
+
 	if (SendWorkerThread)
 	{
 		SendWorkerThread->Destroy();
@@ -43,11 +44,14 @@ void PacketSession::HandleRecvPackets()
 		if (RecvPacketQueue.Dequeue(OUT Packet) == false)
 			break;
 		// TODO
-		//Clientpackethandler::HandlePacket(Packet);
+		//ServerPacketHandler::HandlePacket(Packet);
+		Protocol::C_CHAT pkt;
+		pkt.set_msg("hi i am unreal client!");
+		SendPacket(ServerPacketHandler::MakeSendBuffer(pkt));
 	}
 }
 
 void PacketSession::SendPacket(SendBufferRef SendBuffer)
 {
-	SendPacketQueue.Enqueue(SendBuffer);
+	bool status = SendPacketQueue.Enqueue(SendBuffer);
 }
