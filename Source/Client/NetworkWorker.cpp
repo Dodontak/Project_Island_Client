@@ -139,8 +139,7 @@ uint32 SendWorker::Run()
 		{
 			if (Session->SendPacketQueue.Dequeue(OUT SendBuffer))
 			{
-				bool status = SendPacket(SendBuffer);
-
+				SendPacket(SendBuffer);
 			}
 		}
 		// Sleep?
@@ -154,7 +153,6 @@ void SendWorker::Exit()
 
 bool SendWorker::SendPacket(SendBufferRef SendBuffer)
 {
-	
 	if (SendDesiredBytes(SendBuffer->GetBuffer(), SendBuffer->GetDataLen()) == false)
 		return false;
 	return true;
@@ -172,7 +170,6 @@ bool SendWorker::SendDesiredBytes(const uint8* Buffer, int32 Size)
 		int32 BytesSent = 0;
 		if (Socket->Send(Buffer, Size, BytesSent) == false)
 			return false;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Send %i"), BytesSent));
 		Size -= BytesSent;
 		Buffer += BytesSent;
 	}

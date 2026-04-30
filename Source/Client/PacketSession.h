@@ -14,7 +14,6 @@ public:
 	void Run();
 	void Disconnect();
 	
-	UFUNCTION(blueprintCallable)
 	void HandleRecvPackets();
 	
 	void SendPacket(SendBufferRef SendBuffer);

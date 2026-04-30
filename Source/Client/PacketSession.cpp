@@ -8,6 +8,7 @@
 
 PacketSession::PacketSession(class FSocket* Socket) : Socket(Socket)
 {
+	ServerPacketHandler::Init();
 }
 
 PacketSession::~PacketSession()
@@ -43,15 +44,13 @@ void PacketSession::HandleRecvPackets()
 		TArray<uint8> Packet;
 		if (RecvPacketQueue.Dequeue(OUT Packet) == false)
 			break;
-		// TODO
-		//ServerPacketHandler::HandlePacket(Packet);
-		Protocol::C_CHAT pkt;
-		pkt.set_msg("hi i am unreal client!");
-		SendPacket(ServerPacketHandler::MakeSendBuffer(pkt));
+		DeferredFunc Func;
+		if (ServerPacketHandler::PacketHandler(OUT Func, AsShared(), Packet.GetData(), Packet.Num()))
+			Func();
 	}
 }
 
 void PacketSession::SendPacket(SendBufferRef SendBuffer)
 {
-	bool status = SendPacketQueue.Enqueue(SendBuffer);
+	SendPacketQueue.Enqueue(SendBuffer);
 }
