@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Client.h"
+#define UI UI_ST
+#include <openssl/ossl_typ.h>
+#undef UI
 #include "Engine/GameInstance.h"
 #include "ClientGameInstance.generated.h"
 
@@ -14,7 +17,8 @@ UCLASS()
 class CLIENT_API UClientGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-
+public:
+	virtual void Init() override;
 public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectToGameServer();
@@ -28,9 +32,6 @@ public:
 	void SendPacket(SendBufferRef SendBuffer);
 	
 public:
-	FSocket* Socket;
-	FString IpAddress = TEXT("127.0.0.1");
-	int16 Port = 7777;
-	
+	SSL_CTX* Ctx = nullptr;
 	TSharedPtr<PacketSession> GameServerSession;
 };

@@ -2,34 +2,46 @@
 
 
 #include "ClientGameInstance.h"
+
+// OpenSSL의 UI 구조체 이름을 잠시 바꿔서 언리얼의 namespace UI와 충돌을 피함
+#define UI UI_ST
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#undef UI
+// --- OpenSSL 충돌 방지 처리 끝 ---
+
 #include "Sockets.h"
 #include "Common/TcpSocketBuilder.h"
-#include "Serialization/ArrayWriter.h"
 #include "SocketSubsystem.h"
+#include "Session.h"
 #include "PacketSession.h"
+
+void UClientGameInstance::Init()
+{
+	const SSL_METHOD* Method = TLS_client_method();
+	Ctx = SSL_CTX_new(Method);
+}
 
 void UClientGameInstance::ConnectToGameServer()
 {
-	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"),TEXT("Client Socket"));
+	UE_LOG(LogTemp, Display, TEXT("message"));
+	FSocket* Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(
+		TEXT("Stream"),TEXT("Client Socket"));;
 
+	FString IpAddress = "127.0.0.1";
+	int16 Port = 7777;
 	FIPv4Address Ip;
 	FIPv4Address::Parse(IpAddress, Ip);
-
 	TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 	InternetAddr->SetIp(Ip.Value);
 	InternetAddr->SetPort(Port);
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Connecting To Server"));
 
-	bool Connected = Socket->Connect(*InternetAddr);
-
-	if (Connected)
+	bool Ret = Socket->Connect(*InternetAddr);
+	if (Ret)
 	{
-		// 연결 성공하면 GameServerSession 만들고, 쓰레드 파서 패킷 처리 시작
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Connection Successed"));
-		// Session 
-		GameServerSession = MakeShared<PacketSession>(Socket);
-		GameServerSession->Run();
 	}
 	else
 	{
@@ -39,25 +51,19 @@ void UClientGameInstance::ConnectToGameServer()
 
 void UClientGameInstance::DisconnectFromGameServer()
 {
-	if (Socket)
-	{
-		ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
-		SocketSubsystem->DestroySocket(Socket);
-		Socket = nullptr;
-	}
 }
 
 void UClientGameInstance::HandleRecvPackets()
 {
-	if (Socket == nullptr || GameServerSession == nullptr)
+	if (GameServerSession == nullptr)
 		return;
 	GameServerSession->HandleRecvPackets();
 }
 
 void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
 {
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	GameServerSession->SendPacket(SendBuffer);
+	// if (Socket == nullptr || GameServerSession == nullptr)
+	// 	return;
+	//
+	// GameServerSession->SendPacket(SendBuffer);
 }
