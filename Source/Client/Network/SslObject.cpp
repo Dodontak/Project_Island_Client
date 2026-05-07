@@ -69,11 +69,13 @@ SslStatus SslObject::Write(BYTE* buffer, size_t dataLen, size_t* writtenLen)
 
 uint32 SslObject::GetRBioPendingSize()
 {
+	FScopeLock Lock(&Mutex);
 	return BIO_pending(_rbio);
 }
 
 uint32 SslObject::GetWBioPendingSize()
 {
+	FScopeLock Lock(&Mutex);
 	return BIO_pending(_wbio);
 }
 
@@ -81,20 +83,24 @@ uint32 SslObject::GetWBioPendingSize()
 // 리턴값 > 0 읽거나 쓴 바이트 수, 0 -1 실패, -2 BIO 오류
 uint32 SslObject::ReadRBio(BYTE* buffer, int32 readSize)
 {
+	FScopeLock Lock(&Mutex);
 	return BIO_read(_rbio, buffer, readSize);
 }
 
 uint32 SslObject::WriteRBio(BYTE* buffer, int32 writeSize)
 {
+	FScopeLock Lock(&Mutex);
 	return BIO_write(_rbio, buffer, writeSize);
 }
 
 uint32 SslObject::ReadWBio(BYTE* buffer, int32 readSize)
 {
+	FScopeLock Lock(&Mutex);
 	return BIO_read(_wbio, buffer, readSize);
 }
 
 uint32 SslObject::WriteWBio(BYTE* buffer, int32 dataLen)
 {
+	FScopeLock Lock(&Mutex);
 	return BIO_write(_wbio, buffer, dataLen);
 }

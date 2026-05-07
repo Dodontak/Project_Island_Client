@@ -47,6 +47,7 @@ public:
 	virtual uint32 Run() override;
 	virtual void Exit() override;
 
+	void StartThread();
 	void Destroy();
 
 	RecvBuffer& GetDecBuffer() { return DecBuffer_; }
@@ -57,7 +58,7 @@ public:
 public:
 	SslObjectRef SslRef;
 	bool Recv();
-	uint32 OnRecv();
+	uint32 OnRecv(BYTE* buffer, uint32 len);
 
 protected:
 	FRunnableThread* Thread = nullptr;
@@ -72,8 +73,8 @@ class CLIENT_API TLSRecvWorker : public RecvWorker
 {
 public:
 	TLSRecvWorker(FSocket* Socket, TSharedPtr<PacketSession> Session, SslObjectRef Ssl);
-	virtual RecvBuffer& GetEncBuffer() { return EncBuffer_; }
-	virtual uint8 Decrypt(RecvBuffer& EncBuffer, RecvBuffer& DecBuffer);
+	virtual RecvBuffer& GetEncBuffer() override { return EncBuffer_; }
+	virtual uint8 Decrypt(RecvBuffer& EncBuffer, RecvBuffer& DecBuffer) override;
 
 protected:
 	RecvBuffer EncBuffer_;
@@ -96,7 +97,9 @@ public:
 	virtual void Exit() override;
 
 	bool SendPacket(SendBufferRef sendBuffer);
-
+	virtual bool Encrypt(SendBufferRef& decBuffer, SendBufferRef& encBuffer);
+	
+	void StartThread();
 	void Destroy();
 
 private:
@@ -115,5 +118,5 @@ class CLIENT_API TLSSendWorker : public SendWorker
 {
 public:
 	TLSSendWorker(FSocket* Socket, TSharedPtr<PacketSession> Session, SslObjectRef Ssl);
-	virtual uint8 Encrypt(SendBufferRef& decBuffer, SendBufferRef& encBuffer);
+	virtual bool Encrypt(SendBufferRef& decBuffer, SendBufferRef& encBuffer);
 };

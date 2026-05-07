@@ -17,18 +17,15 @@ class CLIENT_API PacketSession : public TSharedFromThis<PacketSession>
 public:
 	PacketSession(FString IpAddress, uint32 Port);
 	virtual ~PacketSession();
-	virtual uint32 OnRecv(BYTE* buffer, uint32 len);
 
 	bool ConnectToGameServer();
-	virtual void OnConnect();
 	virtual void TLSConnect();
-
 	virtual void Run();
 
 	void HandleRecvPackets();
+	void SendPacket(SendBufferRef SendBuffer);
 
 	TAtomic<bool> IsRunning;
-	TAtomic<bool> IsTCPConnected;
 
 	TSharedPtr<class RecvWorker> RecvWorkerThread;
 	TSharedPtr<class SendWorker> SendWorkerThread;
@@ -44,14 +41,13 @@ class CLIENT_API TLSSession : public PacketSession
 {
 public:
 	TLSSession(FString IpAddress, uint32 Port, SSL_CTX* CTX);
-	virtual ~TLSSession();
-	virtual void Run() final;
+	virtual ~TLSSession() override;
+	virtual void Run() override;
 
-	virtual void TLSConnect() final;
+	virtual void TLSConnect() override;
 	void HandshakeSend();
 	void HandshakeRecv();
 
 public:
-	TAtomic<bool> IsTLSConnected;
 	TSharedPtr<SslObject> SslRef;
 };

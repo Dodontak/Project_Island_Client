@@ -5,7 +5,7 @@
 #include "Sockets.h"
 #include "RecvBuffer.h"
 #include "SendBuffer.h"
-#include "Session.h"
+#include "PacketSession.h"
 #include "SslObject.h"
 
 /*----------------------------------------------------------------------------*\
@@ -17,13 +17,11 @@
 RecvWorker::RecvWorker(FSocket* Socket, TSharedPtr<PacketSession> Session)
 	: SslRef(nullptr), DecBuffer_(BUFFER_SIZE), Socket(Socket), sessionRef(Session)
 {
-	Thread = FRunnableThread::Create(this, TEXT("RecvWorkerThread"));
 }
 
 RecvWorker::RecvWorker(FSocket* Socket, TSharedPtr<PacketSession> Session, SslObjectRef Ssl)
 	: SslRef(Ssl), DecBuffer_(BUFFER_SIZE), Socket(Socket), sessionRef(Session)
 {
-	Thread = FRunnableThread::Create(this, TEXT("RecvWorkerThread"));
 }
 
 RecvWorker::~RecvWorker()
@@ -33,7 +31,6 @@ RecvWorker::~RecvWorker()
 bool RecvWorker::Init()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Recv Thread Init"));
-
 	return true;
 }
 
@@ -41,21 +38,18 @@ uint32 RecvWorker::Run()
 {
 	while (Running)
 	{
-		// TArray<uint8> Packet;
-		// if (ReceivePacket(OUT Packet)) //내부에서 온전한 패킷 하나만큼 담을때까지 대기/while 돔
-		// {
-		// 	if (TSharedPtr<Session> Session = SessionRef.Pin())
-		// 	{
-		// 		Session->RecvPacketQueue.Enqueue(Packet);
-		// 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Recv Some Data From Server!"));
-		// 	}
-		// }
+		Recv();
 	}
 	return 0;
 }
 
 void RecvWorker::Exit()
 {
+}
+
+void RecvWorker::StartThread()
+{
+	Thread = FRunnableThread::Create(this, TEXT("RecvWorkerThread"));
 }
 
 void RecvWorker::Destroy()
@@ -101,8 +95,7 @@ bool RecvWorker::Recv()
 			break;
 		}
 	}
-
-	uint32 DecLen = OnRecv();
+	uint32 DecLen = OnRecv(DecBuffer.ReadPos(), DecBuffer.DataSize());
 	DecBuffer.OnRead(DecLen);
 
 	EncBuffer.Clean();
@@ -111,26 +104,27 @@ bool RecvWorker::Recv()
 	return true;
 }
 
-uint32 RecvWorker::OnRecv()
+uint32 RecvWorker::OnRecv(BYTE* buffer, uint32 len)
 {
 	uint32 processLen = 0;
-	RecvBuffer& DecBuffer = GetDecBuffer();
 	while (true)
 	{
-		uint32 dataLen = DecBuffer.DataSize() - processLen;
+		uint32 dataLen = len - processLen;
 		if (dataLen < sizeof(PacketHeader))
 			break;
 
-		PacketHeader* header = reinterpret_cast<PacketHeader*>(DecBuffer.ReadPos() + processLen);
+		PacketHeader* header = reinterpret_cast<PacketHeader*>(&buffer[processLen]);
+
 		if (dataLen < header->size)
 			break;
+
 		if (TSharedPtr<PacketSession> session = sessionRef.Pin())
 		{
 			TArray<uint8> Packet;
-			Packet.Append(DecBuffer.ReadPos() + processLen, header->size);
+			Packet.Append(&buffer[processLen], header->size);
 			session->RecvPacketQueue.Enqueue(Packet);
+			processLen += header->size;
 		}
-		processLen += header->size;
 	}
 	return processLen;
 }
@@ -173,8 +167,6 @@ uint8 TLSRecvWorker::Decrypt(RecvBuffer& EncBuffer, RecvBuffer& DecBuffer)
 |                                 SendWorker                                   |
 |                                                                              |
 \*----------------------------------------------------------------------------*/
-
-
 SendWorker::SendWorker(FSocket* Socket, TSharedPtr<PacketSession> Session)
 	: Socket(Socket), SessionRef(Session), SslRef(nullptr)
 {
@@ -183,7 +175,6 @@ SendWorker::SendWorker(FSocket* Socket, TSharedPtr<PacketSession> Session)
 SendWorker::SendWorker(FSocket* Socket, TSharedPtr<PacketSession> Session, TSharedPtr<SslObject> Ssl)
 	: Socket(Socket), SessionRef(Session), SslRef(Ssl)
 {
-	Thread = FRunnableThread::Create(this, TEXT("SendWorkerThread"));
 }
 
 SendWorker::~SendWorker()
@@ -221,9 +212,27 @@ void SendWorker::Exit()
 
 bool SendWorker::SendPacket(SendBufferRef sendBuffer)
 {
-	if (SendDesiredBytes(sendBuffer->GetBuffer(), sendBuffer->GetDataLen()) == false)
+	SendBufferRef EncBuffer;
+	{
+		bool isSuccess = Encrypt(sendBuffer, EncBuffer);
+		if (isSuccess == false)
+			return false;
+	}
+
+	if (SendDesiredBytes(EncBuffer->GetBuffer(), EncBuffer->GetDataLen()) == false)
 		return false;
 	return true;
+}
+
+bool SendWorker::Encrypt(SendBufferRef& decBuffer, SendBufferRef& encBuffer)
+{
+	encBuffer = decBuffer;
+	return true;
+}
+
+void SendWorker::StartThread()
+{
+	Thread = FRunnableThread::Create(this, TEXT("SendWorkerThread"));
 }
 
 void SendWorker::Destroy()
@@ -244,12 +253,17 @@ bool SendWorker::SendDesiredBytes(const uint8* Buffer, int32 Size)
 	return true;
 }
 
+/*----------------------------------------------------------------------------*\
+|                                                                              |
+|                               TLSSendWorker                                  |
+|                                                                              |
+\*----------------------------------------------------------------------------*/
 TLSSendWorker::TLSSendWorker(FSocket* Socket, TSharedPtr<PacketSession> Session, SslObjectRef Ssl)
 	: SendWorker(Socket, Session, Ssl)
 {
 }
 
-uint8 TLSSendWorker::Encrypt(SendBufferRef& decBuffer, SendBufferRef& encBuffer)
+bool TLSSendWorker::Encrypt(SendBufferRef& decBuffer, SendBufferRef& encBuffer)
 {
 	size_t writtenLen;
 	SslStatus status = SslRef->Write(decBuffer->GetBuffer(), decBuffer->GetDataLen(), &writtenLen);

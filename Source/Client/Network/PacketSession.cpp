@@ -1,4 +1,4 @@
-#include "Session.h"
+#include "PacketSession.h"
 
 #include "SocketSubsystem.h"
 #include "Interfaces/IPv4/IPv4Address.h"
@@ -7,6 +7,7 @@
 #include "NetworkWorker.h"
 #include "RecvBuffer.h"
 #include "SendBuffer.h"
+#include "ServerPacketHandler.h"
 #include "SslObject.h"
 
 /*----------------------------------------------------------------------------*\
@@ -34,42 +35,48 @@ bool PacketSession::ConnectToGameServer()
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Connecting To Server"));
 
-	// bool Ret = Socket->Connect(*InternetAddr);
-	// if (Ret)
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Connection Successed"));
-	// }
-	// else
-	// {
-	// 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Connection Failed"));
-	// 	return false;
-	// }
-	// TLSConnect();
+	if (Socket->Connect(*InternetAddr))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Connection Successed"));
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Connection Failed"));
+		return false;
+	}
+	TLSConnect();
 	return true;
-}
-
-void PacketSession::OnConnect()
-{
 }
 
 void PacketSession::TLSConnect()
 {
-	OnConnect();
+	Run();
 }
 
 void PacketSession::Run()
 {
 	RecvWorkerThread = MakeShared<RecvWorker>(Socket, AsShared());
 	SendWorkerThread = MakeShared<SendWorker>(Socket, AsShared());
+	RecvWorkerThread->StartThread();
+	SendWorkerThread->StartThread();
 }
 
 void PacketSession::HandleRecvPackets()
 {
+	TArray<uint8> PacketBuffer;
+
+	if (RecvPacketQueue.Dequeue(PacketBuffer))
+	{
+		DeferredFunc Func;
+		ServerPacketHandler::PacketHandler(OUT Func, AsShared(), PacketBuffer.GetData(), PacketBuffer.Num());
+		if (Func)
+			Func();
+	}
 }
 
-uint32 PacketSession::OnRecv(BYTE* buffer, uint32 len)
+void PacketSession::SendPacket(SendBufferRef SendBuffer)
 {
-	return len;
+	SendDeque.PushFirst(SendBuffer);
 }
 
 /*----------------------------------------------------------------------------*\
@@ -90,10 +97,13 @@ TLSSession::~TLSSession()
 
 void TLSSession::Run()
 {
-	// TSharedPtr<TLSRecvWorker> TLSRW = MakeShared<TLSRecvWorker>(Socket, AsShared(), SslRef);
-	// RecvWorkerThread = TLSRW;
-	// TSharedPtr<TLSSendWorker> TLSSW = MakeShared<TLSSendWorker>(Socket, AsShared(), SslRef);
-	// SendWorkerThread = TLSSW;
+	TSharedPtr<TLSRecvWorker> TLSRW = MakeShared<TLSRecvWorker>(Socket, AsShared(), SslRef);
+	RecvWorkerThread = TLSRW;
+	TSharedPtr<TLSSendWorker> TLSSW = MakeShared<TLSSendWorker>(Socket, AsShared(), SslRef);
+	SendWorkerThread = TLSSW;
+	
+	RecvWorkerThread->StartThread();
+	SendWorkerThread->StartThread();
 }
 
 //TLS연결하고, 성공하면 recvworker, sendworker 시작.
@@ -104,7 +114,6 @@ void TLSSession::TLSConnect()
 	case SslStatus::Ok:
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("TLS Successed"));
 		HandshakeSend();
-		OnConnect();
 		Run();
 		break;
 	case SslStatus::WantRead:
@@ -131,6 +140,8 @@ void TLSSession::HandshakeSend()
 
 		uint32 readLen = SslRef->ReadWBio(sendBuffer->GetBuffer(), PendingDataSize);
 		sendBuffer->OnWrite(readLen);
+
+
 		while (readLen > 0)
 		{
 			int32 SentLen = 0;
@@ -148,7 +159,7 @@ void TLSSession::HandshakeSend()
 
 void TLSSession::HandshakeRecv()
 {
-	int32 ReadLen;
+	int32 ReadLen = 0;
 	RecvBufferRef recvBuffer = MakeShared<RecvBuffer>(0x2000); //8KB
 	if (false == Socket->Recv(recvBuffer->WritePos(), recvBuffer->FreeSize(), ReadLen))
 	{
@@ -160,7 +171,7 @@ void TLSSession::HandshakeRecv()
 		//TODO recv 실패 처리
 		return;
 	}
+	recvBuffer->OnWrite(ReadLen);
 	uint32 WriteLen = SslRef->WriteRBio(recvBuffer->ReadPos(), recvBuffer->DataSize());
-
 	TLSConnect();
 }
