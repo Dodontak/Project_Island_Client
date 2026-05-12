@@ -101,7 +101,7 @@ void TLSSession::Run()
 	RecvWorkerThread = TLSRW;
 	TSharedPtr<TLSSendWorker> TLSSW = MakeShared<TLSSendWorker>(Socket, AsShared(), SslRef);
 	SendWorkerThread = TLSSW;
-	
+
 	RecvWorkerThread->StartThread();
 	SendWorkerThread->StartThread();
 }
@@ -127,6 +127,7 @@ void TLSSession::TLSConnect()
 		break;
 	default:
 		//TODO 에러 발생함. 연결 종료.
+		UE_LOG(LogTemp, Warning, TEXT("TLS Error!"));
 		break;
 	}
 }
@@ -148,8 +149,10 @@ void TLSSession::HandshakeSend()
 			if (false == Socket->Send(sendBuffer->GetBuffer(), sendBuffer->GetDataLen(), SentLen))
 			{
 				//TODO send 실패 처리
+				UE_LOG(LogTemp, Warning, TEXT("TLS HandshakeSend Error!"));
 				return;
 			}
+				UE_LOG(LogTemp, Warning, TEXT("Send : %i"), SentLen);
 			sendBuffer->OnRead(SentLen);
 			readLen -= SentLen;
 			PendingDataSize -= SentLen;

@@ -13,6 +13,7 @@
 #include "Sockets.h"
 #include "NetworkWorker.h"
 #include "ServerPacketHandler.h"
+#include "AuthSession.h"
 
 void UClientGameInstance::Init()
 {
@@ -45,12 +46,32 @@ void UClientGameInstance::Shutdown()
 
 		GameServerSession = nullptr;
 	}
+	if (AuthServerSession)
+	{
+		// 워커 스레드 먼저 종료
+		if (AuthServerSession->RecvWorkerThread)
+		{
+			AuthServerSession->RecvWorkerThread->Destroy();
+		}
+		if (AuthServerSession->SendWorkerThread)
+		{
+			AuthServerSession->SendWorkerThread->Destroy();
+		}
+
+		// 소켓 닫기
+		if (AuthServerSession->Socket)
+		{
+			AuthServerSession->Socket->Close();
+		}
+
+		AuthServerSession = nullptr;
+	}
 }
 
 void UClientGameInstance::ConnectToGameServer()
 {
-	GameServerSession = MakeShared<TLSSession>("127.0.0.1", 7777, Ctx);
-	GameServerSession->ConnectToGameServer();
+	AuthServerSession = MakeShared<AuthSession>("192.168.0.39", 4242, Ctx);
+	AuthServerSession->ConnectToGameServer();
 }
 
 void UClientGameInstance::DisconnectFromGameServer()
@@ -59,9 +80,10 @@ void UClientGameInstance::DisconnectFromGameServer()
 
 void UClientGameInstance::HandleRecvPackets()
 {
-	if (GameServerSession == nullptr)
-		return;
-	GameServerSession->HandleRecvPackets();
+	if (GameServerSession != nullptr)
+		GameServerSession->HandleRecvPackets();
+	if (AuthServerSession != nullptr)
+		AuthServerSession->HandleRecvPackets();
 }
 
 void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
@@ -70,4 +92,36 @@ void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
 		return;
 
 	GameServerSession->SendPacket(SendBuffer);
+}
+
+void UClientGameInstance::LoginToAuthServer(FString Id, FString Password)
+{
+	TSharedPtr<AuthSession> AuthServerSessionRef = StaticCastSharedPtr<AuthSession>(AuthServerSession);
+	if (AuthServerSessionRef == nullptr)
+		return;
+	AuthServerSessionRef->LoginToAuthServer(Id, Password);
+}
+
+void UClientGameInstance::SignUpValidCheck(bool SkipEmail, FString Email, FString Id, FString Password)
+{
+	TSharedPtr<AuthSession> AuthServerSessionRef = StaticCastSharedPtr<AuthSession>(AuthServerSession);
+	if (AuthServerSessionRef == nullptr)
+		return;
+	AuthServerSessionRef->SignUpValidCheck(SkipEmail, Email, Id, Password);
+}
+
+void UClientGameInstance::RequestVerifyCode()
+{
+	TSharedPtr<AuthSession> AuthServerSessionRef = StaticCastSharedPtr<AuthSession>(AuthServerSession);
+	if (AuthServerSessionRef == nullptr)
+		return;
+	AuthServerSessionRef->RequestVerifyCode();
+}
+
+void UClientGameInstance::SignUpVerifyEmailCode(FString Code)
+{
+	TSharedPtr<AuthSession> AuthServerSessionRef = StaticCastSharedPtr<AuthSession>(AuthServerSession);
+	if (AuthServerSessionRef == nullptr)
+		return;
+	AuthServerSessionRef->SignUpVerifyEmailCode(Code);
 }

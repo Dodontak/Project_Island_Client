@@ -18,7 +18,7 @@ void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Protocol::C_CHAT pkt;
+	Protocol::GC_CHAT pkt;
 	pkt.set_msg("Hello world!");
 	
 	UE_LOG(LogTemp, Display, TEXT("%s"), *FString(UTF8_TO_TCHAR(pkt.msg().c_str())));

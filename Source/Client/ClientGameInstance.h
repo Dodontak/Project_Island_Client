@@ -10,6 +10,12 @@
 #include "Engine/GameInstance.h"
 #include "ClientGameInstance.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSignUpValidCheck, bool, Success, FString, Email, FString, Reason);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSignUpVerifyCode, bool, Success, FString, Reason);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLoginToGameServer, bool, Success, FString, Reason);
+
 class FSocket;
 class PacketSession;
 
@@ -17,9 +23,11 @@ UCLASS()
 class CLIENT_API UClientGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
+
 public:
 	virtual void Init() override;
 	virtual void Shutdown() override;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectToGameServer();
@@ -29,10 +37,32 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HandleRecvPackets();
-	
+
 	void SendPacket(SendBufferRef SendBuffer);
+
+	UFUNCTION(BlueprintCallable)
+	void LoginToAuthServer(FString Id, FString Password);
+
+	UFUNCTION(BlueprintCallable)
+	void SignUpValidCheck(bool SkipEmail, FString Email, FString Id, FString Password);
+
+	UFUNCTION(BlueprintCallable)
+	void RequestVerifyCode();
+
+	UFUNCTION(BlueprintCallable)
+	void SignUpVerifyEmailCode(FString Code);
 	
+	UPROPERTY(BlueprintAssignable)
+	FOnSignUpValidCheck OnSignUpValidCheck;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnSignUpVerifyCode OnSignUpVerifyCode;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnLoginToGameServer OnLoginToGameServer;
+
 public:
 	SSL_CTX* Ctx = nullptr;
-	TSharedPtr<PacketSession> GameServerSession;
+	TSharedPtr<PacketSession> GameServerSession = nullptr;
+	TSharedPtr<PacketSession> AuthServerSession = nullptr;
 };

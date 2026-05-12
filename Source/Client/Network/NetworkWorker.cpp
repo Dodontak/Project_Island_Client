@@ -95,6 +95,7 @@ bool RecvWorker::Recv()
 			break;
 		}
 	}
+
 	uint32 DecLen = OnRecv(DecBuffer.ReadPos(), DecBuffer.DataSize());
 	DecBuffer.OnRead(DecLen);
 
