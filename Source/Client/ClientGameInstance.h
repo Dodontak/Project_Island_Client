@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Client.h"
+#include "CharacterListResult.h"
 #define UI UI_ST
 #include <openssl/ossl_typ.h>
 #undef UI
 #include "Engine/GameInstance.h"
+#include "Blueprint/UserWidget.h"
+#include "Engine/Texture2D.h"
 #include "ClientGameInstance.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSignUpValidCheck, bool, Success, FString, Email, FString, Reason);
@@ -15,6 +18,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSignUpValidCheck, bool, Succes
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSignUpVerifyCode, bool, Success, FString, Reason);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnLoginToGameServer, bool, Success, FString, Reason);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnRequestMyCharacterList, bool, Success, FCharacterListResult,
+                                               Characters, FString, Reason);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCheckNicknameAvailability, bool, Success, FString, Reason);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCreateNewCharacter, bool, Success, FString, Reason);
 
 class FSocket;
 class PacketSession;
@@ -40,6 +50,7 @@ public:
 
 	void SendPacket(SendBufferRef SendBuffer);
 
+	// AuthServerAPI
 	UFUNCTION(BlueprintCallable)
 	void LoginToAuthServer(FString Id, FString Password);
 
@@ -51,7 +62,22 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SignUpVerifyEmailCode(FString Code);
+
+	// GameServerAPI
+	UFUNCTION(BlueprintCallable)
+	void RequestMyCharacterList();
+
+	UFUNCTION(BlueprintCallable)
+	void HandleMyCharacterListResponse(UUserWidget* WrapBox, UUserWidget* AddNewCharacter,
+	                                   TSubclassOf<UUserWidget> CharacterWidgetClass,
+	                                   FCharacterListResult Characters);
 	
+	UFUNCTION(BlueprintCallable)
+	void CheckNicknameAvailability(FString Nickname);
+	
+	UFUNCTION(BlueprintCallable)
+	void CreateNewCharacter(FString Nickname, FString ClassName);
+
 	UPROPERTY(BlueprintAssignable)
 	FOnSignUpValidCheck OnSignUpValidCheck;
 
@@ -61,8 +87,25 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnLoginToGameServer OnLoginToGameServer;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnRequestMyCharacterList OnRequestMyCharacterList;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnCheckNicknameAvailability OnCheckNicknameAvailability;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnCreateNewCharacter OnCreateNewCharacter;
+
 public:
 	SSL_CTX* Ctx = nullptr;
 	TSharedPtr<PacketSession> GameServerSession = nullptr;
 	TSharedPtr<PacketSession> AuthServerSession = nullptr;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Image")
+	UTexture2D* KnightPortrait;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Image")
+	UTexture2D* ArcherPortrait;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Image")
+	UTexture2D* MagePortrait;
 };

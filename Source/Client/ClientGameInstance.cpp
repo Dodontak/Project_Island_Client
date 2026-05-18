@@ -14,6 +14,11 @@
 #include "NetworkWorker.h"
 #include "ServerPacketHandler.h"
 #include "AuthSession.h"
+#include "GameSession.h"
+#include "CharacterListResult.h"
+#include "Components/WrapBox.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
 
 void UClientGameInstance::Init()
 {
@@ -94,6 +99,12 @@ void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
 	GameServerSession->SendPacket(SendBuffer);
 }
 
+/*----------------------------------------------------------------------------*\
+|                                                                              |
+|                               AuthServerAPI                                  |
+|                                                                              |
+\*----------------------------------------------------------------------------*/
+
 void UClientGameInstance::LoginToAuthServer(FString Id, FString Password)
 {
 	TSharedPtr<AuthSession> AuthServerSessionRef = StaticCastSharedPtr<AuthSession>(AuthServerSession);
@@ -124,4 +135,79 @@ void UClientGameInstance::SignUpVerifyEmailCode(FString Code)
 	if (AuthServerSessionRef == nullptr)
 		return;
 	AuthServerSessionRef->SignUpVerifyEmailCode(Code);
+}
+
+/*----------------------------------------------------------------------------*\
+|                                                                              |
+|                               GameServerAPI                                  |
+|                                                                              |
+\*----------------------------------------------------------------------------*/
+
+void UClientGameInstance::RequestMyCharacterList()
+{
+	TSharedPtr<GameSession> GameServerRef = StaticCastSharedPtr<GameSession>(GameServerSession);
+	if (GameServerRef == nullptr)
+		return;
+	GameServerRef->RequestMyCharacterList();
+}
+
+void UClientGameInstance::HandleMyCharacterListResponse(UUserWidget* WrapBox, UUserWidget* AddNewCharacter,
+                                                        TSubclassOf<UUserWidget> CharacterWidgetClass,
+                                                        FCharacterListResult Characters)
+{
+	UWrapBox* Box = Cast<UWrapBox>(WrapBox->GetWidgetFromName(TEXT("CharacterListWrapBox")));
+	if (Box == nullptr)
+		return;
+
+	for (auto Character_ : Characters.Characters)
+	{
+		UUserWidget* CharacterWidget = CreateWidget<UUserWidget>(GetWorld(), CharacterWidgetClass);
+		if (CharacterWidget == nullptr) continue;
+		UImage* PortraitImage = Cast<UImage>(CharacterWidget->GetWidgetFromName(TEXT("Portrait")));
+		if (PortraitImage == nullptr) continue;
+
+		switch (Character_.playertype())
+		{
+		case Protocol::PLAYER_TYPE_ARCHER:
+			PortraitImage->SetBrushFromTexture(ArcherPortrait);
+			break;
+		case Protocol::PLAYER_TYPE_KNIGHT:
+			PortraitImage->SetBrushFromTexture(KnightPortrait);
+			break;
+		case Protocol::PLAYER_TYPE_MAGE:
+			PortraitImage->SetBrushFromTexture(MagePortrait);
+			break;
+		default:
+			break;
+		}
+		UTextBlock* Nickname = Cast<UTextBlock>(CharacterWidget->GetWidgetFromName(TEXT("NickName")));
+		if (Nickname)
+			Nickname->SetText(FText::FromString(Character_.name().c_str()));
+		Box->AddChildToWrapBox(CharacterWidget);
+	}
+	Box->AddChildToWrapBox(AddNewCharacter);
+}
+
+void UClientGameInstance::CheckNicknameAvailability(FString Nickname)
+{
+	Protocol::GC_CHECK_NICKNAME Pkt;
+	
+	Pkt.set_nickname(TCHAR_TO_UTF8(*Nickname));
+	GameServerSession->SendPacket(ServerPacketHandler::MakeSendBuffer(Pkt));
+}
+
+void UClientGameInstance::CreateNewCharacter(FString Nickname, FString ClassName)
+{
+	Protocol::GC_CREATE_CHARACTER Pkt;
+	
+	Pkt.set_nickname(TCHAR_TO_UTF8(*Nickname));
+	if (ClassName.Equals(TEXT("Knight")))
+		Pkt.set_type(Protocol::PLAYER_TYPE_KNIGHT);
+	else if (ClassName.Equals(TEXT("Mage")))
+		Pkt.set_type(Protocol::PLAYER_TYPE_MAGE);
+	else if (ClassName.Equals(TEXT("Archer")))
+		Pkt.set_type(Protocol::PLAYER_TYPE_ARCHER);
+	else
+		Pkt.set_type(Protocol::PLAYER_TYPE_NONE);
+	GameServerSession->SendPacket(ServerPacketHandler::MakeSendBuffer(Pkt));
 }

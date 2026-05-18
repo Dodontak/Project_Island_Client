@@ -7,6 +7,7 @@ public:
 	GameSession(FString IpAddress, uint32 Port, SSL_CTX* CTX);
 	virtual ~GameSession();
 
+	void RequestMyCharacterList();
 public:
-	FString JWT_;
+	uint32 UserId;
 };

@@ -152,7 +152,6 @@ void TLSSession::HandshakeSend()
 				UE_LOG(LogTemp, Warning, TEXT("TLS HandshakeSend Error!"));
 				return;
 			}
-				UE_LOG(LogTemp, Warning, TEXT("Send : %i"), SentLen);
 			sendBuffer->OnRead(SentLen);
 			readLen -= SentLen;
 			PendingDataSize -= SentLen;

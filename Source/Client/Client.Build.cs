@@ -15,7 +15,8 @@ public class Client : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"Sockets",
-			"Networking"
+			"Networking",
+			"UMG"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore", "OpenSSL" });

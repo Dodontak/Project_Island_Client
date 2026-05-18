@@ -26,6 +26,7 @@ RecvWorker::RecvWorker(FSocket* Socket, TSharedPtr<PacketSession> Session, SslOb
 
 RecvWorker::~RecvWorker()
 {
+	Destroy();
 }
 
 bool RecvWorker::Init()
@@ -180,6 +181,7 @@ SendWorker::SendWorker(FSocket* Socket, TSharedPtr<PacketSession> Session, TShar
 
 SendWorker::~SendWorker()
 {
+	Destroy();
 }
 
 bool SendWorker::Init()

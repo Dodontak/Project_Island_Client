@@ -183,9 +183,10 @@ class PlayerInfo final :
 
   enum : int {
     kNameFieldNumber = 2,
-    kPosFieldNumber = 4,
+    kPosFieldNumber = 5,
     kIdFieldNumber = 1,
-    kPlayerTypeFieldNumber = 3,
+    kLevelFieldNumber = 3,
+    kPlayerTypeFieldNumber = 4,
   };
   // string name = 2;
   void clear_name();
@@ -201,7 +202,7 @@ class PlayerInfo final :
   std::string* _internal_mutable_name();
   public:
 
-  // .Protocol.Position pos = 4;
+  // .Protocol.Position pos = 5;
   bool has_pos() const;
   private:
   bool _internal_has_pos() const;
@@ -228,7 +229,16 @@ class PlayerInfo final :
   void _internal_set_id(uint64_t value);
   public:
 
-  // .Protocol.PlayerType playerType = 3;
+  // uint32 level = 3;
+  void clear_level();
+  uint32_t level() const;
+  void set_level(uint32_t value);
+  private:
+  uint32_t _internal_level() const;
+  void _internal_set_level(uint32_t value);
+  public:
+
+  // .Protocol.PlayerType playerType = 4;
   void clear_playertype();
   ::Protocol::PlayerType playertype() const;
   void set_playertype(::Protocol::PlayerType value);
@@ -248,6 +258,7 @@ class PlayerInfo final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr name_;
     ::Protocol::Position* pos_;
     uint64_t id_;
+    uint32_t level_;
     int playertype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -505,7 +516,27 @@ inline void PlayerInfo::set_allocated_name(std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.PlayerInfo.name)
 }
 
-// .Protocol.PlayerType playerType = 3;
+// uint32 level = 3;
+inline void PlayerInfo::clear_level() {
+  _impl_.level_ = 0u;
+}
+inline uint32_t PlayerInfo::_internal_level() const {
+  return _impl_.level_;
+}
+inline uint32_t PlayerInfo::level() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.level)
+  return _internal_level();
+}
+inline void PlayerInfo::_internal_set_level(uint32_t value) {
+  
+  _impl_.level_ = value;
+}
+inline void PlayerInfo::set_level(uint32_t value) {
+  _internal_set_level(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.level)
+}
+
+// .Protocol.PlayerType playerType = 4;
 inline void PlayerInfo::clear_playertype() {
   _impl_.playertype_ = 0;
 }
@@ -525,7 +556,7 @@ inline void PlayerInfo::set_playertype(::Protocol::PlayerType value) {
   // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.playerType)
 }
 
-// .Protocol.Position pos = 4;
+// .Protocol.Position pos = 5;
 inline bool PlayerInfo::_internal_has_pos() const {
   return this != internal_default_instance() && _impl_.pos_ != nullptr;
 }

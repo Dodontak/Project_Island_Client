@@ -25,11 +25,59 @@ void Handle_GS_LOGIN(const PacketSessionRef& session, const Protocol::GS_LOGIN& 
 
 	if (pkt.success())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GameServer Login Success!"));
+		TSharedPtr<GameSession> GameServer = StaticCastSharedPtr<GameSession>(session);
+
+		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		{
+			GI->OnLoginToGameServer.Broadcast(true, "");
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GameServer Login Failed!"));
+		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		{
+			GI->OnLoginToGameServer.Broadcast(false, pkt.reason().c_str());
+			GI->GameServerSession = nullptr;
+		}
+	}
+}
+
+void Handle_GS_CHARACTER_LIST(const PacketSessionRef& session, const Protocol::GS_CHARACTER_LIST& pkt)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_CHARACTER_LIST"));
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		FCharacterListResult Characters;
+		if (pkt.success())
+		{
+			for (const Protocol::PlayerInfo& player : pkt.characters())
+			{
+				Characters.Characters.Add(player);
+			}
+			GI->OnRequestMyCharacterList.Broadcast(pkt.success(), Characters, "");
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Fail : %hs"), pkt.reason().c_str());
+			GI->OnRequestMyCharacterList.Broadcast(pkt.success(), Characters, pkt.reason().c_str());
+		}
+	}
+}
+
+void Handle_GS_CHECK_NICKNAME(const PacketSessionRef& session, const Protocol::GS_CHECK_NICKNAME& pkt)
+{
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		GI->OnCheckNicknameAvailability.Broadcast(pkt.success(), pkt.reason().c_str());
+	}
+}
+
+void Handle_GS_CREATE_CHARACTER(const PacketSessionRef& session, const Protocol::GS_CREATE_CHARACTER& pkt)
+{
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		GI->OnCreateNewCharacter.Broadcast(pkt.success(), pkt.reason().c_str());
 	}
 }
 
