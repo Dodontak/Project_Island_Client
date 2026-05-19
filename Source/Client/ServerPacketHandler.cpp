@@ -3,6 +3,7 @@
 #include "ClientGameInstance.h"
 #include "AuthSession.h"
 #include "GameSession.h"
+#include "Kismet/GameplayStatics.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -67,6 +68,7 @@ void Handle_GS_CHARACTER_LIST(const PacketSessionRef& session, const Protocol::G
 
 void Handle_GS_CHECK_NICKNAME(const PacketSessionRef& session, const Protocol::GS_CHECK_NICKNAME& pkt)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_CHECK_NICKNAME"));
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
 		GI->OnCheckNicknameAvailability.Broadcast(pkt.success(), pkt.reason().c_str());
@@ -75,6 +77,7 @@ void Handle_GS_CHECK_NICKNAME(const PacketSessionRef& session, const Protocol::G
 
 void Handle_GS_CREATE_CHARACTER(const PacketSessionRef& session, const Protocol::GS_CREATE_CHARACTER& pkt)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_CREATE_CHARACTER"));
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
 		GI->OnCreateNewCharacter.Broadcast(pkt.success(), pkt.reason().c_str());
@@ -83,6 +86,21 @@ void Handle_GS_CREATE_CHARACTER(const PacketSessionRef& session, const Protocol:
 
 void Handle_GS_ENTER_ROOM(const PacketSessionRef& session, const Protocol::GS_ENTER_ROOM& pkt)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_ENTER_ROOM"));
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		if (pkt.success())
+		{
+			UGameplayStatics::OpenLevel(GI->GetWorld(), TEXT("BasicLevel"));
+			
+			GI->PendingPlayerInfo.CopyFrom(pkt.character_info());
+			GI->bHasPendingSpawn = true;
+		}
+		else
+		{
+			
+		}
+	}
 }
 
 void Handle_GS_LEAVE_ROOM(const PacketSessionRef& session, const Protocol::GS_LEAVE_ROOM& pkt)
@@ -139,17 +157,14 @@ void Handle_AS_VERIFY_MAIL_REQ(const PacketSessionRef& session, const Protocol::
 	UE_LOG(LogTemp, Warning, TEXT("Handle_AS_VERIFY_MAIL_REQ"));
 
 	TSharedPtr<AuthSession> AuthServer = StaticCastSharedPtr<AuthSession>(session);
-	if (pkt.success())
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
-		// TODO SignUp 위젯 닫고 이메일 인증 위젯 열기
-		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		if (pkt.success())
 		{
+			// TODO SignUp 위젯 닫고 이메일 인증 위젯 열기
 			GI->OnSignUpValidCheck.Broadcast(true, AuthServer->GetEmailAddress(), "");
 		}
-	}
-	else
-	{
-		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		else
 		{
 			GI->OnSignUpValidCheck.Broadcast(false, AuthServer->GetEmailAddress(), pkt.reason().c_str());
 		}
@@ -160,17 +175,14 @@ void Handle_AS_VERIFY_EMAIL_CODE(const PacketSessionRef& session, const Protocol
 {
 	UE_LOG(LogTemp, Warning, TEXT("Handle_AS_VERIFY_EMAIL_CODE"));
 	TSharedPtr<AuthSession> AuthServer = StaticCastSharedPtr<AuthSession>(session);
-	if (pkt.success())
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
-		// TODO SignUp 위젯 닫고 이메일 인증 위젯 열기
-		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		if (pkt.success())
 		{
+			// TODO SignUp 위젯 닫고 이메일 인증 위젯 열기
 			GI->OnSignUpVerifyCode.Broadcast(true, "");
 		}
-	}
-	else
-	{
-		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		else
 		{
 			GI->OnSignUpVerifyCode.Broadcast(false, pkt.reason().c_str());
 		}
@@ -180,9 +192,9 @@ void Handle_AS_VERIFY_EMAIL_CODE(const PacketSessionRef& session, const Protocol
 void Handle_AS_LOGIN(const PacketSessionRef& session, const Protocol::AS_LOGIN& pkt)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Handle_AS_LOGIN"));
-	if (pkt.success())
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
-		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		if (pkt.success())
 		{
 			GI->GameServerSession = MakeShared<GameSession>("127.0.0.1", 7777, GI->Ctx);
 			bool Success = GI->GameServerSession->ConnectToGameServer();
@@ -198,10 +210,7 @@ void Handle_AS_LOGIN(const PacketSessionRef& session, const Protocol::AS_LOGIN& 
 				GI->OnLoginToGameServer.Broadcast(false, pkt.reason().c_str());
 			}
 		}
-	}
-	else
-	{
-		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		else
 		{
 			GI->OnLoginToGameServer.Broadcast(false, pkt.reason().c_str());
 		}

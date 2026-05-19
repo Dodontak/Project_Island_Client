@@ -132,7 +132,8 @@ struct GS_CREATE_CHARACTERDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GS_CREATE_CHARACTERDefaultTypeInternal _GS_CREATE_CHARACTER_default_instance_;
 PROTOBUF_CONSTEXPR GC_ENTER_ROOM::GC_ENTER_ROOM(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.room_id_)*/0u
+    /*decltype(_impl_.character_index_)*/0
+  , /*decltype(_impl_.room_id_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct GC_ENTER_ROOMDefaultTypeInternal {
   PROTOBUF_CONSTEXPR GC_ENTER_ROOMDefaultTypeInternal()
@@ -145,7 +146,9 @@ struct GC_ENTER_ROOMDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GC_ENTER_ROOMDefaultTypeInternal _GC_ENTER_ROOM_default_instance_;
 PROTOBUF_CONSTEXPR GS_ENTER_ROOM::GS_ENTER_ROOM(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.success_)*/false
+    /*decltype(_impl_.reason_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.character_info_)*/nullptr
+  , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct GS_ENTER_ROOMDefaultTypeInternal {
   PROTOBUF_CONSTEXPR GS_ENTER_ROOMDefaultTypeInternal()
@@ -429,6 +432,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::GC_ENTER_ROOM, _impl_.character_index_),
   PROTOBUF_FIELD_OFFSET(::Protocol::GC_ENTER_ROOM, _impl_.room_id_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::GS_ENTER_ROOM, _internal_metadata_),
@@ -437,6 +441,8 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::GS_ENTER_ROOM, _impl_.success_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::GS_ENTER_ROOM, _impl_.character_info_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::GS_ENTER_ROOM, _impl_.reason_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::GC_LEAVE_ROOM, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -564,21 +570,21 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 46, -1, -1, sizeof(::Protocol::GC_CREATE_CHARACTER)},
   { 54, -1, -1, sizeof(::Protocol::GS_CREATE_CHARACTER)},
   { 62, -1, -1, sizeof(::Protocol::GC_ENTER_ROOM)},
-  { 69, -1, -1, sizeof(::Protocol::GS_ENTER_ROOM)},
-  { 76, -1, -1, sizeof(::Protocol::GC_LEAVE_ROOM)},
-  { 82, -1, -1, sizeof(::Protocol::GS_LEAVE_ROOM)},
-  { 88, -1, -1, sizeof(::Protocol::GS_SPAWN)},
-  { 95, -1, -1, sizeof(::Protocol::GS_DESPAWN)},
-  { 102, -1, -1, sizeof(::Protocol::GC_CHAT)},
-  { 110, -1, -1, sizeof(::Protocol::GS_CHAT)},
-  { 118, -1, -1, sizeof(::Protocol::AC_SIGNUP)},
-  { 128, -1, -1, sizeof(::Protocol::AS_SIGNUP)},
-  { 138, -1, -1, sizeof(::Protocol::AC_VERIFY_MAIL_REQ)},
-  { 145, -1, -1, sizeof(::Protocol::AS_VERIFY_MAIL_REQ)},
-  { 155, -1, -1, sizeof(::Protocol::AC_VERIFY_EMAIL_CODE)},
-  { 163, -1, -1, sizeof(::Protocol::AS_VERIFY_EMAIL_CODE)},
-  { 173, -1, -1, sizeof(::Protocol::AC_LOGIN)},
-  { 181, -1, -1, sizeof(::Protocol::AS_LOGIN)},
+  { 70, -1, -1, sizeof(::Protocol::GS_ENTER_ROOM)},
+  { 79, -1, -1, sizeof(::Protocol::GC_LEAVE_ROOM)},
+  { 85, -1, -1, sizeof(::Protocol::GS_LEAVE_ROOM)},
+  { 91, -1, -1, sizeof(::Protocol::GS_SPAWN)},
+  { 98, -1, -1, sizeof(::Protocol::GS_DESPAWN)},
+  { 105, -1, -1, sizeof(::Protocol::GC_CHAT)},
+  { 113, -1, -1, sizeof(::Protocol::GS_CHAT)},
+  { 121, -1, -1, sizeof(::Protocol::AC_SIGNUP)},
+  { 131, -1, -1, sizeof(::Protocol::AS_SIGNUP)},
+  { 141, -1, -1, sizeof(::Protocol::AC_VERIFY_MAIL_REQ)},
+  { 148, -1, -1, sizeof(::Protocol::AS_VERIFY_MAIL_REQ)},
+  { 158, -1, -1, sizeof(::Protocol::AC_VERIFY_EMAIL_CODE)},
+  { 166, -1, -1, sizeof(::Protocol::AS_VERIFY_EMAIL_CODE)},
+  { 176, -1, -1, sizeof(::Protocol::AC_LOGIN)},
+  { 184, -1, -1, sizeof(::Protocol::AS_LOGIN)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -621,28 +627,31 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "TE_CHARACTER\022\020\n\010nickname\030\001 \001(\t\022\"\n\004type\030\002"
   " \001(\0162\024.Protocol.PlayerType\"6\n\023GS_CREATE_"
   "CHARACTER\022\017\n\007success\030\001 \001(\010\022\016\n\006reason\030\002 \001"
-  "(\t\" \n\rGC_ENTER_ROOM\022\017\n\007room_id\030\001 \001(\r\" \n\r"
-  "GS_ENTER_ROOM\022\017\n\007success\030\001 \001(\010\"\017\n\rGC_LEA"
-  "VE_ROOM\"\017\n\rGS_LEAVE_ROOM\"1\n\010GS_SPAWN\022%\n\007"
-  "players\030\001 \003(\0132\024.Protocol.PlayerInfo\" \n\nG"
-  "S_DESPAWN\022\022\n\nobject_ids\030\001 \003(\004\"\'\n\007GC_CHAT"
-  "\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"\'\n\007GS_CHA"
-  "T\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"R\n\tAC_SI"
-  "GNUP\022\020\n\010nickname\030\001 \001(\t\022\020\n\010password\030\002 \001(\t"
-  "\022\r\n\005email\030\003 \001(\t\022\022\n\nskip_email\030\004 \001(\010\"Q\n\tA"
-  "S_SIGNUP\022\017\n\007success\030\001 \001(\010\022\022\n\nskip_email\030"
-  "\002 \001(\010\022\017\n\007temp_id\030\003 \001(\t\022\016\n\006reason\030\004 \001(\t\"%"
-  "\n\022AC_VERIFY_MAIL_REQ\022\017\n\007temp_id\030\001 \001(\t\"W\n"
-  "\022AS_VERIFY_MAIL_REQ\022\017\n\007success\030\001 \001(\010\022\017\n\007"
-  "temp_id\030\002 \001(\t\022\017\n\007expired\030\003 \001(\010\022\016\n\006reason"
-  "\030\004 \001(\t\"<\n\024AC_VERIFY_EMAIL_CODE\022\017\n\007temp_i"
-  "d\030\001 \001(\t\022\023\n\013verify_code\030\002 \001(\t\"Z\n\024AS_VERIF"
-  "Y_EMAIL_CODE\022\017\n\007success\030\001 \001(\010\022\017\n\007expired"
-  "\030\002 \001(\010\022\020\n\010nickname\030\003 \001(\t\022\016\n\006reason\030\004 \001(\t"
-  "\".\n\010AC_LOGIN\022\020\n\010nickname\030\001 \001(\t\022\020\n\010passwo"
-  "rd\030\002 \001(\t\"`\n\010AS_LOGIN\022\017\n\007success\030\001 \001(\010\022\020\n"
-  "\010is_block\030\002 \001(\010\022\022\n\nfail_count\030\003 \001(\005\022\r\n\005t"
-  "oken\030\004 \001(\t\022\016\n\006reason\030\005 \001(\tb\006proto3"
+  "(\t\"9\n\rGC_ENTER_ROOM\022\027\n\017character_index\030\001"
+  " \001(\005\022\017\n\007room_id\030\002 \001(\005\"^\n\rGS_ENTER_ROOM\022\017"
+  "\n\007success\030\001 \001(\010\022,\n\016character_info\030\002 \001(\0132"
+  "\024.Protocol.PlayerInfo\022\016\n\006reason\030\003 \001(\t\"\017\n"
+  "\rGC_LEAVE_ROOM\"\017\n\rGS_LEAVE_ROOM\"1\n\010GS_SP"
+  "AWN\022%\n\007players\030\001 \003(\0132\024.Protocol.PlayerIn"
+  "fo\" \n\nGS_DESPAWN\022\022\n\nobject_ids\030\001 \003(\004\"\'\n\007"
+  "GC_CHAT\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"\'\n"
+  "\007GS_CHAT\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"R"
+  "\n\tAC_SIGNUP\022\020\n\010nickname\030\001 \001(\t\022\020\n\010passwor"
+  "d\030\002 \001(\t\022\r\n\005email\030\003 \001(\t\022\022\n\nskip_email\030\004 \001"
+  "(\010\"Q\n\tAS_SIGNUP\022\017\n\007success\030\001 \001(\010\022\022\n\nskip"
+  "_email\030\002 \001(\010\022\017\n\007temp_id\030\003 \001(\t\022\016\n\006reason\030"
+  "\004 \001(\t\"%\n\022AC_VERIFY_MAIL_REQ\022\017\n\007temp_id\030\001"
+  " \001(\t\"W\n\022AS_VERIFY_MAIL_REQ\022\017\n\007success\030\001 "
+  "\001(\010\022\017\n\007temp_id\030\002 \001(\t\022\017\n\007expired\030\003 \001(\010\022\016\n"
+  "\006reason\030\004 \001(\t\"<\n\024AC_VERIFY_EMAIL_CODE\022\017\n"
+  "\007temp_id\030\001 \001(\t\022\023\n\013verify_code\030\002 \001(\t\"Z\n\024A"
+  "S_VERIFY_EMAIL_CODE\022\017\n\007success\030\001 \001(\010\022\017\n\007"
+  "expired\030\002 \001(\010\022\020\n\010nickname\030\003 \001(\t\022\016\n\006reaso"
+  "n\030\004 \001(\t\".\n\010AC_LOGIN\022\020\n\010nickname\030\001 \001(\t\022\020\n"
+  "\010password\030\002 \001(\t\"`\n\010AS_LOGIN\022\017\n\007success\030\001"
+  " \001(\010\022\020\n\010is_block\030\002 \001(\010\022\022\n\nfail_count\030\003 \001"
+  "(\005\022\r\n\005token\030\004 \001(\t\022\016\n\006reason\030\005 \001(\tb\006proto"
+  "3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -650,7 +659,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1354, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1441, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 24,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -2350,11 +2359,14 @@ GC_ENTER_ROOM::GC_ENTER_ROOM(const GC_ENTER_ROOM& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   GC_ENTER_ROOM* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.room_id_){}
+      decltype(_impl_.character_index_){}
+    , decltype(_impl_.room_id_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _this->_impl_.room_id_ = from._impl_.room_id_;
+  ::memcpy(&_impl_.character_index_, &from._impl_.character_index_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.room_id_) -
+    reinterpret_cast<char*>(&_impl_.character_index_)) + sizeof(_impl_.room_id_));
   // @@protoc_insertion_point(copy_constructor:Protocol.GC_ENTER_ROOM)
 }
 
@@ -2363,7 +2375,8 @@ inline void GC_ENTER_ROOM::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.room_id_){0u}
+      decltype(_impl_.character_index_){0}
+    , decltype(_impl_.room_id_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2391,7 +2404,9 @@ void GC_ENTER_ROOM::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.room_id_ = 0u;
+  ::memset(&_impl_.character_index_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.room_id_) -
+      reinterpret_cast<char*>(&_impl_.character_index_)) + sizeof(_impl_.room_id_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2401,9 +2416,17 @@ const char* GC_ENTER_ROOM::_InternalParse(const char* ptr, ::_pbi::ParseContext*
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint32 room_id = 1;
+      // int32 character_index = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.character_index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 room_id = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.room_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
@@ -2438,10 +2461,16 @@ uint8_t* GC_ENTER_ROOM::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint32 room_id = 1;
+  // int32 character_index = 1;
+  if (this->_internal_character_index() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_character_index(), target);
+  }
+
+  // int32 room_id = 2;
   if (this->_internal_room_id() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_room_id(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_room_id(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2460,9 +2489,14 @@ size_t GC_ENTER_ROOM::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // uint32 room_id = 1;
+  // int32 character_index = 1;
+  if (this->_internal_character_index() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_character_index());
+  }
+
+  // int32 room_id = 2;
   if (this->_internal_room_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_room_id());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_room_id());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2483,6 +2517,9 @@ void GC_ENTER_ROOM::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (from._internal_character_index() != 0) {
+    _this->_internal_set_character_index(from._internal_character_index());
+  }
   if (from._internal_room_id() != 0) {
     _this->_internal_set_room_id(from._internal_room_id());
   }
@@ -2503,7 +2540,12 @@ bool GC_ENTER_ROOM::IsInitialized() const {
 void GC_ENTER_ROOM::InternalSwap(GC_ENTER_ROOM* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.room_id_, other->_impl_.room_id_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(GC_ENTER_ROOM, _impl_.room_id_)
+      + sizeof(GC_ENTER_ROOM::_impl_.room_id_)
+      - PROTOBUF_FIELD_OFFSET(GC_ENTER_ROOM, _impl_.character_index_)>(
+          reinterpret_cast<char*>(&_impl_.character_index_),
+          reinterpret_cast<char*>(&other->_impl_.character_index_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata GC_ENTER_ROOM::GetMetadata() const {
@@ -2516,8 +2558,19 @@ void GC_ENTER_ROOM::InternalSwap(GC_ENTER_ROOM* other) {
 
 class GS_ENTER_ROOM::_Internal {
  public:
+  static const ::Protocol::PlayerInfo& character_info(const GS_ENTER_ROOM* msg);
 };
 
+const ::Protocol::PlayerInfo&
+GS_ENTER_ROOM::_Internal::character_info(const GS_ENTER_ROOM* msg) {
+  return *msg->_impl_.character_info_;
+}
+void GS_ENTER_ROOM::clear_character_info() {
+  if (GetArenaForAllocation() == nullptr && _impl_.character_info_ != nullptr) {
+    delete _impl_.character_info_;
+  }
+  _impl_.character_info_ = nullptr;
+}
 GS_ENTER_ROOM::GS_ENTER_ROOM(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -2528,10 +2581,23 @@ GS_ENTER_ROOM::GS_ENTER_ROOM(const GS_ENTER_ROOM& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   GS_ENTER_ROOM* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.success_){}
+      decltype(_impl_.reason_){}
+    , decltype(_impl_.character_info_){nullptr}
+    , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.reason_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.reason_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_reason().empty()) {
+    _this->_impl_.reason_.Set(from._internal_reason(), 
+      _this->GetArenaForAllocation());
+  }
+  if (from._internal_has_character_info()) {
+    _this->_impl_.character_info_ = new ::Protocol::PlayerInfo(*from._impl_.character_info_);
+  }
   _this->_impl_.success_ = from._impl_.success_;
   // @@protoc_insertion_point(copy_constructor:Protocol.GS_ENTER_ROOM)
 }
@@ -2541,9 +2607,15 @@ inline void GS_ENTER_ROOM::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.success_){false}
+      decltype(_impl_.reason_){}
+    , decltype(_impl_.character_info_){nullptr}
+    , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
+  _impl_.reason_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.reason_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 GS_ENTER_ROOM::~GS_ENTER_ROOM() {
@@ -2557,6 +2629,8 @@ GS_ENTER_ROOM::~GS_ENTER_ROOM() {
 
 inline void GS_ENTER_ROOM::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.reason_.Destroy();
+  if (this != internal_default_instance()) delete _impl_.character_info_;
 }
 
 void GS_ENTER_ROOM::SetCachedSize(int size) const {
@@ -2569,6 +2643,11 @@ void GS_ENTER_ROOM::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  _impl_.reason_.ClearToEmpty();
+  if (GetArenaForAllocation() == nullptr && _impl_.character_info_ != nullptr) {
+    delete _impl_.character_info_;
+  }
+  _impl_.character_info_ = nullptr;
   _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -2584,6 +2663,24 @@ const char* GS_ENTER_ROOM::_InternalParse(const char* ptr, ::_pbi::ParseContext*
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.PlayerInfo character_info = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_character_info(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string reason = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_reason();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.GS_ENTER_ROOM.reason"));
         } else
           goto handle_unusual;
         continue;
@@ -2622,6 +2719,23 @@ uint8_t* GS_ENTER_ROOM::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
   }
 
+  // .Protocol.PlayerInfo character_info = 2;
+  if (this->_internal_has_character_info()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(2, _Internal::character_info(this),
+        _Internal::character_info(this).GetCachedSize(), target, stream);
+  }
+
+  // string reason = 3;
+  if (!this->_internal_reason().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_reason().data(), static_cast<int>(this->_internal_reason().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "Protocol.GS_ENTER_ROOM.reason");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_reason(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -2637,6 +2751,20 @@ size_t GS_ENTER_ROOM::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
+
+  // string reason = 3;
+  if (!this->_internal_reason().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_reason());
+  }
+
+  // .Protocol.PlayerInfo character_info = 2;
+  if (this->_internal_has_character_info()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.character_info_);
+  }
 
   // bool success = 1;
   if (this->_internal_success() != 0) {
@@ -2661,6 +2789,13 @@ void GS_ENTER_ROOM::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (!from._internal_reason().empty()) {
+    _this->_internal_set_reason(from._internal_reason());
+  }
+  if (from._internal_has_character_info()) {
+    _this->_internal_mutable_character_info()->::Protocol::PlayerInfo::MergeFrom(
+        from._internal_character_info());
+  }
   if (from._internal_success() != 0) {
     _this->_internal_set_success(from._internal_success());
   }
@@ -2680,8 +2815,19 @@ bool GS_ENTER_ROOM::IsInitialized() const {
 
 void GS_ENTER_ROOM::InternalSwap(GS_ENTER_ROOM* other) {
   using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(_impl_.success_, other->_impl_.success_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.reason_, lhs_arena,
+      &other->_impl_.reason_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(GS_ENTER_ROOM, _impl_.success_)
+      + sizeof(GS_ENTER_ROOM::_impl_.success_)
+      - PROTOBUF_FIELD_OFFSET(GS_ENTER_ROOM, _impl_.character_info_)>(
+          reinterpret_cast<char*>(&_impl_.character_info_),
+          reinterpret_cast<char*>(&other->_impl_.character_info_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata GS_ENTER_ROOM::GetMetadata() const {

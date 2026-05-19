@@ -16,6 +16,7 @@
 #include "AuthSession.h"
 #include "GameSession.h"
 #include "CharacterListResult.h"
+#include "CharacterSelectWidget.h"
 #include "Components/WrapBox.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -159,14 +160,15 @@ void UClientGameInstance::HandleMyCharacterListResponse(UUserWidget* WrapBox, UU
 	if (Box == nullptr)
 		return;
 
-	for (auto Character_ : Characters.Characters)
+	for (int32 Index = 0; Index < Characters.Characters.Num(); Index++)
 	{
-		UUserWidget* CharacterWidget = CreateWidget<UUserWidget>(GetWorld(), CharacterWidgetClass);
+		UCharacterSelectWidget* CharacterWidget =
+			CreateWidget<UCharacterSelectWidget>(GetWorld(), CharacterWidgetClass);
 		if (CharacterWidget == nullptr) continue;
 		UImage* PortraitImage = Cast<UImage>(CharacterWidget->GetWidgetFromName(TEXT("Portrait")));
 		if (PortraitImage == nullptr) continue;
 
-		switch (Character_.playertype())
+		switch (Characters.Characters[Index].playertype())
 		{
 		case Protocol::PLAYER_TYPE_ARCHER:
 			PortraitImage->SetBrushFromTexture(ArcherPortrait);
@@ -182,7 +184,9 @@ void UClientGameInstance::HandleMyCharacterListResponse(UUserWidget* WrapBox, UU
 		}
 		UTextBlock* Nickname = Cast<UTextBlock>(CharacterWidget->GetWidgetFromName(TEXT("NickName")));
 		if (Nickname)
-			Nickname->SetText(FText::FromString(Character_.name().c_str()));
+			Nickname->SetText(FText::FromString(Characters.Characters[Index].name().c_str()));
+		CharacterWidget->Index = Index;
+		CharacterWidget->Nickname = Nickname->GetText().ToString();;
 		Box->AddChildToWrapBox(CharacterWidget);
 	}
 	Box->AddChildToWrapBox(AddNewCharacter);
@@ -191,7 +195,7 @@ void UClientGameInstance::HandleMyCharacterListResponse(UUserWidget* WrapBox, UU
 void UClientGameInstance::CheckNicknameAvailability(FString Nickname)
 {
 	Protocol::GC_CHECK_NICKNAME Pkt;
-	
+
 	Pkt.set_nickname(TCHAR_TO_UTF8(*Nickname));
 	GameServerSession->SendPacket(ServerPacketHandler::MakeSendBuffer(Pkt));
 }
@@ -199,7 +203,7 @@ void UClientGameInstance::CheckNicknameAvailability(FString Nickname)
 void UClientGameInstance::CreateNewCharacter(FString Nickname, FString ClassName)
 {
 	Protocol::GC_CREATE_CHARACTER Pkt;
-	
+
 	Pkt.set_nickname(TCHAR_TO_UTF8(*Nickname));
 	if (ClassName.Equals(TEXT("Knight")))
 		Pkt.set_type(Protocol::PLAYER_TYPE_KNIGHT);
@@ -210,4 +214,36 @@ void UClientGameInstance::CreateNewCharacter(FString Nickname, FString ClassName
 	else
 		Pkt.set_type(Protocol::PLAYER_TYPE_NONE);
 	GameServerSession->SendPacket(ServerPacketHandler::MakeSendBuffer(Pkt));
+}
+
+void UClientGameInstance::SelectCharacter(UCharacterSelectWidget* Character)
+{
+	Protocol::GC_ENTER_ROOM Pkt;
+
+	Pkt.set_character_index(Character->GetIndex());
+	Pkt.set_room_id(0);
+	GameServerSession->SendPacket(ServerPacketHandler::MakeSendBuffer(Pkt));
+}
+
+void UClientGameInstance::HandleSpawnMe()
+{
+	if (bHasPendingSpawn == false)
+		return;
+	bHasPendingSpawn = true;
+	
+	if (GameServerSession == nullptr)
+		return;
+	
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectId = PendingPlayerInfo.id();
+	if (Players.Find(ObjectId) != nullptr)
+		return;
+	
+	FVector SpawnLocation(PendingPlayerInfo.pos().x(), PendingPlayerInfo.pos().y(), PendingPlayerInfo.pos().z());
+	AActor* Actor = World->SpawnActor(PlayerClass, &SpawnLocation);
+	
+	Players.Add(PendingPlayerInfo.id(), Actor);
 }

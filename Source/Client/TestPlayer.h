@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "MyPawn.generated.h"
+#include "TestPlayer.generated.h"
 
 UCLASS()
-class CLIENT_API AMyPawn : public APawn
+class CLIENT_API ATestPlayer : public APawn
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
-	AMyPawn();
+	ATestPlayer();
 
 protected:
 	// Called when the game starts or when spawned

@@ -1547,15 +1547,25 @@ class GC_ENTER_ROOM final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kRoomIdFieldNumber = 1,
+    kCharacterIndexFieldNumber = 1,
+    kRoomIdFieldNumber = 2,
   };
-  // uint32 room_id = 1;
-  void clear_room_id();
-  uint32_t room_id() const;
-  void set_room_id(uint32_t value);
+  // int32 character_index = 1;
+  void clear_character_index();
+  int32_t character_index() const;
+  void set_character_index(int32_t value);
   private:
-  uint32_t _internal_room_id() const;
-  void _internal_set_room_id(uint32_t value);
+  int32_t _internal_character_index() const;
+  void _internal_set_character_index(int32_t value);
+  public:
+
+  // int32 room_id = 2;
+  void clear_room_id();
+  int32_t room_id() const;
+  void set_room_id(int32_t value);
+  private:
+  int32_t _internal_room_id() const;
+  void _internal_set_room_id(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.GC_ENTER_ROOM)
@@ -1566,7 +1576,8 @@ class GC_ENTER_ROOM final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint32_t room_id_;
+    int32_t character_index_;
+    int32_t room_id_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1695,8 +1706,42 @@ class GS_ENTER_ROOM final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kReasonFieldNumber = 3,
+    kCharacterInfoFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
+  // string reason = 3;
+  void clear_reason();
+  const std::string& reason() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_reason(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_reason();
+  PROTOBUF_NODISCARD std::string* release_reason();
+  void set_allocated_reason(std::string* reason);
+  private:
+  const std::string& _internal_reason() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_reason(const std::string& value);
+  std::string* _internal_mutable_reason();
+  public:
+
+  // .Protocol.PlayerInfo character_info = 2;
+  bool has_character_info() const;
+  private:
+  bool _internal_has_character_info() const;
+  public:
+  void clear_character_info();
+  const ::Protocol::PlayerInfo& character_info() const;
+  PROTOBUF_NODISCARD ::Protocol::PlayerInfo* release_character_info();
+  ::Protocol::PlayerInfo* mutable_character_info();
+  void set_allocated_character_info(::Protocol::PlayerInfo* character_info);
+  private:
+  const ::Protocol::PlayerInfo& _internal_character_info() const;
+  ::Protocol::PlayerInfo* _internal_mutable_character_info();
+  public:
+  void unsafe_arena_set_allocated_character_info(
+      ::Protocol::PlayerInfo* character_info);
+  ::Protocol::PlayerInfo* unsafe_arena_release_character_info();
+
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -1714,6 +1759,8 @@ class GS_ENTER_ROOM final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr reason_;
+    ::Protocol::PlayerInfo* character_info_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -4615,22 +4662,42 @@ inline void GS_CREATE_CHARACTER::set_allocated_reason(std::string* reason) {
 
 // GC_ENTER_ROOM
 
-// uint32 room_id = 1;
-inline void GC_ENTER_ROOM::clear_room_id() {
-  _impl_.room_id_ = 0u;
+// int32 character_index = 1;
+inline void GC_ENTER_ROOM::clear_character_index() {
+  _impl_.character_index_ = 0;
 }
-inline uint32_t GC_ENTER_ROOM::_internal_room_id() const {
+inline int32_t GC_ENTER_ROOM::_internal_character_index() const {
+  return _impl_.character_index_;
+}
+inline int32_t GC_ENTER_ROOM::character_index() const {
+  // @@protoc_insertion_point(field_get:Protocol.GC_ENTER_ROOM.character_index)
+  return _internal_character_index();
+}
+inline void GC_ENTER_ROOM::_internal_set_character_index(int32_t value) {
+  
+  _impl_.character_index_ = value;
+}
+inline void GC_ENTER_ROOM::set_character_index(int32_t value) {
+  _internal_set_character_index(value);
+  // @@protoc_insertion_point(field_set:Protocol.GC_ENTER_ROOM.character_index)
+}
+
+// int32 room_id = 2;
+inline void GC_ENTER_ROOM::clear_room_id() {
+  _impl_.room_id_ = 0;
+}
+inline int32_t GC_ENTER_ROOM::_internal_room_id() const {
   return _impl_.room_id_;
 }
-inline uint32_t GC_ENTER_ROOM::room_id() const {
+inline int32_t GC_ENTER_ROOM::room_id() const {
   // @@protoc_insertion_point(field_get:Protocol.GC_ENTER_ROOM.room_id)
   return _internal_room_id();
 }
-inline void GC_ENTER_ROOM::_internal_set_room_id(uint32_t value) {
+inline void GC_ENTER_ROOM::_internal_set_room_id(int32_t value) {
   
   _impl_.room_id_ = value;
 }
-inline void GC_ENTER_ROOM::set_room_id(uint32_t value) {
+inline void GC_ENTER_ROOM::set_room_id(int32_t value) {
   _internal_set_room_id(value);
   // @@protoc_insertion_point(field_set:Protocol.GC_ENTER_ROOM.room_id)
 }
@@ -4657,6 +4724,141 @@ inline void GS_ENTER_ROOM::_internal_set_success(bool value) {
 inline void GS_ENTER_ROOM::set_success(bool value) {
   _internal_set_success(value);
   // @@protoc_insertion_point(field_set:Protocol.GS_ENTER_ROOM.success)
+}
+
+// .Protocol.PlayerInfo character_info = 2;
+inline bool GS_ENTER_ROOM::_internal_has_character_info() const {
+  return this != internal_default_instance() && _impl_.character_info_ != nullptr;
+}
+inline bool GS_ENTER_ROOM::has_character_info() const {
+  return _internal_has_character_info();
+}
+inline const ::Protocol::PlayerInfo& GS_ENTER_ROOM::_internal_character_info() const {
+  const ::Protocol::PlayerInfo* p = _impl_.character_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerInfo&>(
+      ::Protocol::_PlayerInfo_default_instance_);
+}
+inline const ::Protocol::PlayerInfo& GS_ENTER_ROOM::character_info() const {
+  // @@protoc_insertion_point(field_get:Protocol.GS_ENTER_ROOM.character_info)
+  return _internal_character_info();
+}
+inline void GS_ENTER_ROOM::unsafe_arena_set_allocated_character_info(
+    ::Protocol::PlayerInfo* character_info) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.character_info_);
+  }
+  _impl_.character_info_ = character_info;
+  if (character_info) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.GS_ENTER_ROOM.character_info)
+}
+inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::release_character_info() {
+  
+  ::Protocol::PlayerInfo* temp = _impl_.character_info_;
+  _impl_.character_info_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::unsafe_arena_release_character_info() {
+  // @@protoc_insertion_point(field_release:Protocol.GS_ENTER_ROOM.character_info)
+  
+  ::Protocol::PlayerInfo* temp = _impl_.character_info_;
+  _impl_.character_info_ = nullptr;
+  return temp;
+}
+inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::_internal_mutable_character_info() {
+  
+  if (_impl_.character_info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::PlayerInfo>(GetArenaForAllocation());
+    _impl_.character_info_ = p;
+  }
+  return _impl_.character_info_;
+}
+inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::mutable_character_info() {
+  ::Protocol::PlayerInfo* _msg = _internal_mutable_character_info();
+  // @@protoc_insertion_point(field_mutable:Protocol.GS_ENTER_ROOM.character_info)
+  return _msg;
+}
+inline void GS_ENTER_ROOM::set_allocated_character_info(::Protocol::PlayerInfo* character_info) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.character_info_);
+  }
+  if (character_info) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(character_info));
+    if (message_arena != submessage_arena) {
+      character_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, character_info, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.character_info_ = character_info;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.GS_ENTER_ROOM.character_info)
+}
+
+// string reason = 3;
+inline void GS_ENTER_ROOM::clear_reason() {
+  _impl_.reason_.ClearToEmpty();
+}
+inline const std::string& GS_ENTER_ROOM::reason() const {
+  // @@protoc_insertion_point(field_get:Protocol.GS_ENTER_ROOM.reason)
+  return _internal_reason();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void GS_ENTER_ROOM::set_reason(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.reason_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.GS_ENTER_ROOM.reason)
+}
+inline std::string* GS_ENTER_ROOM::mutable_reason() {
+  std::string* _s = _internal_mutable_reason();
+  // @@protoc_insertion_point(field_mutable:Protocol.GS_ENTER_ROOM.reason)
+  return _s;
+}
+inline const std::string& GS_ENTER_ROOM::_internal_reason() const {
+  return _impl_.reason_.Get();
+}
+inline void GS_ENTER_ROOM::_internal_set_reason(const std::string& value) {
+  
+  _impl_.reason_.Set(value, GetArenaForAllocation());
+}
+inline std::string* GS_ENTER_ROOM::_internal_mutable_reason() {
+  
+  return _impl_.reason_.Mutable(GetArenaForAllocation());
+}
+inline std::string* GS_ENTER_ROOM::release_reason() {
+  // @@protoc_insertion_point(field_release:Protocol.GS_ENTER_ROOM.reason)
+  return _impl_.reason_.Release();
+}
+inline void GS_ENTER_ROOM::set_allocated_reason(std::string* reason) {
+  if (reason != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.reason_.SetAllocated(reason, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.reason_.IsDefault()) {
+    _impl_.reason_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.GS_ENTER_ROOM.reason)
 }
 
 // -------------------------------------------------------------------

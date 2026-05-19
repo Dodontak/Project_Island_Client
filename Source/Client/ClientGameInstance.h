@@ -8,11 +8,13 @@
 #define UI UI_ST
 #include <openssl/ossl_typ.h>
 #undef UI
+#include "Protocol.pb.h"
 #include "Engine/GameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/Texture2D.h"
 #include "ClientGameInstance.generated.h"
 
+class UCharacterSelectWidget;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSignUpValidCheck, bool, Success, FString, Email, FString, Reason);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSignUpVerifyCode, bool, Success, FString, Reason);
@@ -50,6 +52,9 @@ public:
 
 	void SendPacket(SendBufferRef SendBuffer);
 
+	UFUNCTION(BlueprintCallable)
+	void HandleSpawnMe();
+	
 	// AuthServerAPI
 	UFUNCTION(BlueprintCallable)
 	void LoginToAuthServer(FString Id, FString Password);
@@ -71,12 +76,15 @@ public:
 	void HandleMyCharacterListResponse(UUserWidget* WrapBox, UUserWidget* AddNewCharacter,
 	                                   TSubclassOf<UUserWidget> CharacterWidgetClass,
 	                                   FCharacterListResult Characters);
-	
+
 	UFUNCTION(BlueprintCallable)
 	void CheckNicknameAvailability(FString Nickname);
-	
+
 	UFUNCTION(BlueprintCallable)
 	void CreateNewCharacter(FString Nickname, FString ClassName);
+	
+	UFUNCTION(BlueprintCallable)
+	void SelectCharacter(UCharacterSelectWidget* Character);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnSignUpValidCheck OnSignUpValidCheck;
@@ -89,10 +97,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnRequestMyCharacterList OnRequestMyCharacterList;
-	
+
 	UPROPERTY(BlueprintAssignable)
 	FOnCheckNicknameAvailability OnCheckNicknameAvailability;
-	
+
 	UPROPERTY(BlueprintAssignable)
 	FOnCreateNewCharacter OnCreateNewCharacter;
 
@@ -108,4 +116,13 @@ public:
 	UTexture2D* ArcherPortrait;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Image")
 	UTexture2D* MagePortrait;
+	
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> PlayerClass;
+	
+	TMap<uint64, AActor*> Players;
+	
+	Protocol::PlayerInfo PendingPlayerInfo;  // 대기 중인 스폰 정보
+	bool bHasPendingSpawn = false;
 };
