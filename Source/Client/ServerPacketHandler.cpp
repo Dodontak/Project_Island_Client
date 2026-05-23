@@ -10,6 +10,7 @@ PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 bool Handle_INVALID(DeferredFunc& outFunc, PacketSessionRef& session, BYTE* buffer, int32 len)
 {
+	UE_LOG(LogTemp, Error, TEXT("Handle_INVALID"));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Invalid Packet")));
 	return false;
 }
@@ -92,31 +93,58 @@ void Handle_GS_ENTER_ROOM(const PacketSessionRef& session, const Protocol::GS_EN
 		if (pkt.success())
 		{
 			UGameplayStatics::OpenLevel(GI->GetWorld(), TEXT("BasicLevel"));
-			
+
 			GI->PendingPlayerInfo.CopyFrom(pkt.character_info());
 			GI->bHasPendingSpawn = true;
 		}
 		else
 		{
-			
 		}
 	}
 }
 
 void Handle_GS_LEAVE_ROOM(const PacketSessionRef& session, const Protocol::GS_LEAVE_ROOM& pkt)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_LEAVE_ROOM"));
+
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		UGameplayStatics::OpenLevel(GI->GetWorld(), TEXT("TestLevel"));
+	}
+}
+
+void Handle_GS_LEAVE_GAME(const PacketSessionRef& session, const Protocol::GS_LEAVE_GAME& pkt)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_LEAVE_GAME"));
 }
 
 void Handle_GS_SPAWN(const PacketSessionRef& session, const Protocol::GS_SPAWN& pkt)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_SPAWN"));
+
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		for (auto& Player : pkt.players())
+			GI->HandleSpawn(Player);
+	}
+	else
+	{
+	}
 }
 
 void Handle_GS_DESPAWN(const PacketSessionRef& session, const Protocol::GS_DESPAWN& pkt)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_DESPAWN"));
+
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		GI->HandleDespawn(pkt);
+	}
 }
 
 void Handle_GS_CHAT(const PacketSessionRef& session, const Protocol::GS_CHAT& pkt)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Handle_GS_CHAT"));
 	Protocol::GC_CHAT Response;
 	FString Result = FString(UTF8_TO_TCHAR(pkt.msg().c_str()));
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green,
@@ -135,19 +163,21 @@ void Handle_AS_SIGNUP(const PacketSessionRef& session, const Protocol::AS_SIGNUP
 {
 	UE_LOG(LogTemp, Warning, TEXT("Handle_AS_SIGNUP"));
 
-	if (pkt.success())
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
-		TSharedPtr<AuthSession> AuthServer = StaticCastSharedPtr<AuthSession>(session);
-
-		AuthServer->SetTempId(FString(pkt.temp_id().c_str()));
-		AuthServer->RequestVerifyCode();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("reason : %hs"), pkt.reason().c_str());
-		if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		if (pkt.success())
 		{
-			GI->OnSignUpValidCheck.Broadcast(false, "", pkt.reason().c_str());
+			TSharedPtr<AuthSession> AuthServer = StaticCastSharedPtr<AuthSession>(session);
+
+			AuthServer->SetTempId(FString(pkt.temp_id().c_str()));
+			if (pkt.skip_email() == true)
+				GI->OnSignUpValidCheck.Broadcast(pkt.success(), pkt.skip_email(), "", "");
+			else
+				AuthServer->RequestVerifyCode();
+		}
+		else
+		{
+			GI->OnSignUpValidCheck.Broadcast(pkt.success(), pkt.skip_email(), "", pkt.reason().c_str());
 		}
 	}
 }
@@ -162,11 +192,11 @@ void Handle_AS_VERIFY_MAIL_REQ(const PacketSessionRef& session, const Protocol::
 		if (pkt.success())
 		{
 			// TODO SignUp 위젯 닫고 이메일 인증 위젯 열기
-			GI->OnSignUpValidCheck.Broadcast(true, AuthServer->GetEmailAddress(), "");
+			GI->OnSignUpValidCheck.Broadcast(true, false, AuthServer->GetEmailAddress(), "");
 		}
 		else
 		{
-			GI->OnSignUpValidCheck.Broadcast(false, AuthServer->GetEmailAddress(), pkt.reason().c_str());
+			GI->OnSignUpValidCheck.Broadcast(false, false, AuthServer->GetEmailAddress(), pkt.reason().c_str());
 		}
 	}
 }

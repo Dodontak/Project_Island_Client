@@ -84,6 +84,15 @@ void UClientGameInstance::DisconnectFromGameServer()
 {
 }
 
+void UClientGameInstance::LeaveRoom()
+{
+	if (GameServerSession == nullptr)
+		return;
+	
+	Protocol::GC_LEAVE_ROOM LeaveRoomPkt;
+	GameServerSession->SendPacket(ServerPacketHandler::MakeSendBuffer(LeaveRoomPkt));
+}
+
 void UClientGameInstance::HandleRecvPackets()
 {
 	if (GameServerSession != nullptr)
@@ -229,11 +238,11 @@ void UClientGameInstance::HandleSpawnMe()
 {
 	if (bHasPendingSpawn == false)
 		return;
-	bHasPendingSpawn = true;
-	
+	bHasPendingSpawn = false;
+
 	if (GameServerSession == nullptr)
 		return;
-	
+
 	auto* World = GetWorld();
 	if (World == nullptr)
 		return;
@@ -241,9 +250,54 @@ void UClientGameInstance::HandleSpawnMe()
 	const uint64 ObjectId = PendingPlayerInfo.id();
 	if (Players.Find(ObjectId) != nullptr)
 		return;
-	
+
 	FVector SpawnLocation(PendingPlayerInfo.pos().x(), PendingPlayerInfo.pos().y(), PendingPlayerInfo.pos().z());
-	AActor* Actor = World->SpawnActor(PlayerClass, &SpawnLocation);
+	ACharacter* SpawnedPawn = World->SpawnActor<ACharacter>(PlayerClass, SpawnLocation, FRotator::ZeroRotator);
+
+	Players.Add(PendingPlayerInfo.id(), SpawnedPawn);
+
+	APlayerController* PC = World->GetFirstPlayerController();
+	if (PC)
+	{
+		PC->Possess(SpawnedPawn);
+	}
+}
+
+void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo)
+{
+	if (GameServerSession == nullptr)
+		return;
+
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
 	
-	Players.Add(PendingPlayerInfo.id(), Actor);
+	FVector SpawnLocation(PlayerInfo.pos().x(), PlayerInfo.pos().y(), PlayerInfo.pos().z());
+	ACharacter* SpawnedPawn = World->SpawnActor<ACharacter>(PlayerClass, SpawnLocation, FRotator::ZeroRotator);
+
+	Players.Add(PlayerInfo.id(), SpawnedPawn);
+}
+
+void UClientGameInstance::HandleDespawn(uint64 ObjectId)
+{
+	if (GameServerSession == nullptr)
+		return;
+	
+	auto* World = GetWorld();
+	if (World == nullptr)
+		return;
+	
+	AActor** FindActor = Players.Find(ObjectId);
+	if (FindActor == nullptr)
+		return;
+	
+	World->DestroyActor(*FindActor);
+}
+
+void UClientGameInstance::HandleDespawn(const Protocol::GS_DESPAWN& DespawnPkt)
+{
+	for (auto& ObjectId : DespawnPkt.object_ids())
+	{
+		HandleDespawn(ObjectId);
+	}
 }

@@ -69,6 +69,7 @@ bool RecvWorker::Recv()
 		//TODO Recv 실패 시 처리
 		return false;
 	}
+	
 	if (BytesReceived == 0)
 	{
 		//TODO Disconnect 처리
@@ -96,9 +97,8 @@ bool RecvWorker::Recv()
 			break;
 		}
 	}
-
-	uint32 DecLen = OnRecv(DecBuffer.ReadPos(), DecBuffer.DataSize());
-	DecBuffer.OnRead(DecLen);
+	uint32 ProcessedLen = OnRecv(DecBuffer.ReadPos(), DecBuffer.DataSize());
+	DecBuffer.OnRead(ProcessedLen);
 
 	EncBuffer.Clean();
 	DecBuffer.Clean();

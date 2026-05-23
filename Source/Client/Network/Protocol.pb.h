@@ -87,6 +87,9 @@ extern GC_CREATE_CHARACTERDefaultTypeInternal _GC_CREATE_CHARACTER_default_insta
 class GC_ENTER_ROOM;
 struct GC_ENTER_ROOMDefaultTypeInternal;
 extern GC_ENTER_ROOMDefaultTypeInternal _GC_ENTER_ROOM_default_instance_;
+class GC_LEAVE_GAME;
+struct GC_LEAVE_GAMEDefaultTypeInternal;
+extern GC_LEAVE_GAMEDefaultTypeInternal _GC_LEAVE_GAME_default_instance_;
 class GC_LEAVE_ROOM;
 struct GC_LEAVE_ROOMDefaultTypeInternal;
 extern GC_LEAVE_ROOMDefaultTypeInternal _GC_LEAVE_ROOM_default_instance_;
@@ -111,6 +114,9 @@ extern GS_DESPAWNDefaultTypeInternal _GS_DESPAWN_default_instance_;
 class GS_ENTER_ROOM;
 struct GS_ENTER_ROOMDefaultTypeInternal;
 extern GS_ENTER_ROOMDefaultTypeInternal _GS_ENTER_ROOM_default_instance_;
+class GS_LEAVE_GAME;
+struct GS_LEAVE_GAMEDefaultTypeInternal;
+extern GS_LEAVE_GAMEDefaultTypeInternal _GS_LEAVE_GAME_default_instance_;
 class GS_LEAVE_ROOM;
 struct GS_LEAVE_ROOMDefaultTypeInternal;
 extern GS_LEAVE_ROOMDefaultTypeInternal _GS_LEAVE_ROOM_default_instance_;
@@ -135,6 +141,7 @@ template<> ::Protocol::GC_CHAT* Arena::CreateMaybeMessage<::Protocol::GC_CHAT>(A
 template<> ::Protocol::GC_CHECK_NICKNAME* Arena::CreateMaybeMessage<::Protocol::GC_CHECK_NICKNAME>(Arena*);
 template<> ::Protocol::GC_CREATE_CHARACTER* Arena::CreateMaybeMessage<::Protocol::GC_CREATE_CHARACTER>(Arena*);
 template<> ::Protocol::GC_ENTER_ROOM* Arena::CreateMaybeMessage<::Protocol::GC_ENTER_ROOM>(Arena*);
+template<> ::Protocol::GC_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::GC_LEAVE_GAME>(Arena*);
 template<> ::Protocol::GC_LEAVE_ROOM* Arena::CreateMaybeMessage<::Protocol::GC_LEAVE_ROOM>(Arena*);
 template<> ::Protocol::GC_LOGIN* Arena::CreateMaybeMessage<::Protocol::GC_LOGIN>(Arena*);
 template<> ::Protocol::GS_CHARACTER_LIST* Arena::CreateMaybeMessage<::Protocol::GS_CHARACTER_LIST>(Arena*);
@@ -143,6 +150,7 @@ template<> ::Protocol::GS_CHECK_NICKNAME* Arena::CreateMaybeMessage<::Protocol::
 template<> ::Protocol::GS_CREATE_CHARACTER* Arena::CreateMaybeMessage<::Protocol::GS_CREATE_CHARACTER>(Arena*);
 template<> ::Protocol::GS_DESPAWN* Arena::CreateMaybeMessage<::Protocol::GS_DESPAWN>(Arena*);
 template<> ::Protocol::GS_ENTER_ROOM* Arena::CreateMaybeMessage<::Protocol::GS_ENTER_ROOM>(Arena*);
+template<> ::Protocol::GS_LEAVE_GAME* Arena::CreateMaybeMessage<::Protocol::GS_LEAVE_GAME>(Arena*);
 template<> ::Protocol::GS_LEAVE_ROOM* Arena::CreateMaybeMessage<::Protocol::GS_LEAVE_ROOM>(Arena*);
 template<> ::Protocol::GS_LOGIN* Arena::CreateMaybeMessage<::Protocol::GS_LOGIN>(Arena*);
 template<> ::Protocol::GS_SPAWN* Arena::CreateMaybeMessage<::Protocol::GS_SPAWN>(Arena*);
@@ -2005,6 +2013,242 @@ class GS_LEAVE_ROOM final :
 };
 // -------------------------------------------------------------------
 
+class GC_LEAVE_GAME final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.GC_LEAVE_GAME) */ {
+ public:
+  inline GC_LEAVE_GAME() : GC_LEAVE_GAME(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR GC_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  GC_LEAVE_GAME(const GC_LEAVE_GAME& from);
+  GC_LEAVE_GAME(GC_LEAVE_GAME&& from) noexcept
+    : GC_LEAVE_GAME() {
+    *this = ::std::move(from);
+  }
+
+  inline GC_LEAVE_GAME& operator=(const GC_LEAVE_GAME& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GC_LEAVE_GAME& operator=(GC_LEAVE_GAME&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GC_LEAVE_GAME& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GC_LEAVE_GAME* internal_default_instance() {
+    return reinterpret_cast<const GC_LEAVE_GAME*>(
+               &_GC_LEAVE_GAME_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    12;
+
+  friend void swap(GC_LEAVE_GAME& a, GC_LEAVE_GAME& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(GC_LEAVE_GAME* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GC_LEAVE_GAME* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GC_LEAVE_GAME* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<GC_LEAVE_GAME>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const GC_LEAVE_GAME& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const GC_LEAVE_GAME& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.GC_LEAVE_GAME";
+  }
+  protected:
+  explicit GC_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:Protocol.GC_LEAVE_GAME)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GS_LEAVE_GAME final :
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.GS_LEAVE_GAME) */ {
+ public:
+  inline GS_LEAVE_GAME() : GS_LEAVE_GAME(nullptr) {}
+  explicit PROTOBUF_CONSTEXPR GS_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  GS_LEAVE_GAME(const GS_LEAVE_GAME& from);
+  GS_LEAVE_GAME(GS_LEAVE_GAME&& from) noexcept
+    : GS_LEAVE_GAME() {
+    *this = ::std::move(from);
+  }
+
+  inline GS_LEAVE_GAME& operator=(const GS_LEAVE_GAME& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GS_LEAVE_GAME& operator=(GS_LEAVE_GAME&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const GS_LEAVE_GAME& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const GS_LEAVE_GAME* internal_default_instance() {
+    return reinterpret_cast<const GS_LEAVE_GAME*>(
+               &_GS_LEAVE_GAME_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(GS_LEAVE_GAME& a, GS_LEAVE_GAME& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(GS_LEAVE_GAME* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(GS_LEAVE_GAME* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  GS_LEAVE_GAME* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<GS_LEAVE_GAME>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const GS_LEAVE_GAME& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const GS_LEAVE_GAME& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
+  public:
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.GS_LEAVE_GAME";
+  }
+  protected:
+  explicit GS_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:Protocol.GS_LEAVE_GAME)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+  };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class GS_SPAWN final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.GS_SPAWN) */ {
  public:
@@ -2053,7 +2297,7 @@ class GS_SPAWN final :
                &_GS_SPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    14;
 
   friend void swap(GS_SPAWN& a, GS_SPAWN& b) {
     a.Swap(&b);
@@ -2210,7 +2454,7 @@ class GS_DESPAWN final :
                &_GS_DESPAWN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    15;
 
   friend void swap(GS_DESPAWN& a, GS_DESPAWN& b) {
     a.Swap(&b);
@@ -2372,7 +2616,7 @@ class GC_CHAT final :
                &_GC_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    16;
 
   friend void swap(GC_CHAT& a, GC_CHAT& b) {
     a.Swap(&b);
@@ -2536,7 +2780,7 @@ class GS_CHAT final :
                &_GS_CHAT_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    17;
 
   friend void swap(GS_CHAT& a, GS_CHAT& b) {
     a.Swap(&b);
@@ -2700,7 +2944,7 @@ class AC_SIGNUP final :
                &_AC_SIGNUP_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    18;
 
   friend void swap(AC_SIGNUP& a, AC_SIGNUP& b) {
     a.Swap(&b);
@@ -2896,7 +3140,7 @@ class AS_SIGNUP final :
                &_AS_SIGNUP_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    19;
 
   friend void swap(AS_SIGNUP& a, AS_SIGNUP& b) {
     a.Swap(&b);
@@ -3087,7 +3331,7 @@ class AC_VERIFY_MAIL_REQ final :
                &_AC_VERIFY_MAIL_REQ_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    20;
 
   friend void swap(AC_VERIFY_MAIL_REQ& a, AC_VERIFY_MAIL_REQ& b) {
     a.Swap(&b);
@@ -3240,7 +3484,7 @@ class AS_VERIFY_MAIL_REQ final :
                &_AS_VERIFY_MAIL_REQ_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    21;
 
   friend void swap(AS_VERIFY_MAIL_REQ& a, AS_VERIFY_MAIL_REQ& b) {
     a.Swap(&b);
@@ -3431,7 +3675,7 @@ class AC_VERIFY_EMAIL_CODE final :
                &_AC_VERIFY_EMAIL_CODE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    22;
 
   friend void swap(AC_VERIFY_EMAIL_CODE& a, AC_VERIFY_EMAIL_CODE& b) {
     a.Swap(&b);
@@ -3600,7 +3844,7 @@ class AS_VERIFY_EMAIL_CODE final :
                &_AS_VERIFY_EMAIL_CODE_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    23;
 
   friend void swap(AS_VERIFY_EMAIL_CODE& a, AS_VERIFY_EMAIL_CODE& b) {
     a.Swap(&b);
@@ -3791,7 +4035,7 @@ class AC_LOGIN final :
                &_AC_LOGIN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    24;
 
   friend void swap(AC_LOGIN& a, AC_LOGIN& b) {
     a.Swap(&b);
@@ -3960,7 +4204,7 @@ class AS_LOGIN final :
                &_AS_LOGIN_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    25;
 
   friend void swap(AS_LOGIN& a, AS_LOGIN& b) {
     a.Swap(&b);
@@ -4868,6 +5112,14 @@ inline void GS_ENTER_ROOM::set_allocated_reason(std::string* reason) {
 // -------------------------------------------------------------------
 
 // GS_LEAVE_ROOM
+
+// -------------------------------------------------------------------
+
+// GC_LEAVE_GAME
+
+// -------------------------------------------------------------------
+
+// GS_LEAVE_GAME
 
 // -------------------------------------------------------------------
 
@@ -6144,6 +6396,10 @@ inline void AS_LOGIN::set_allocated_reason(std::string* reason) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

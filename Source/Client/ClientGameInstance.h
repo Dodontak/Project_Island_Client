@@ -12,10 +12,13 @@
 #include "Engine/GameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/Texture2D.h"
+#include "GameFramework/Character.h"
 #include "ClientGameInstance.generated.h"
 
 class UCharacterSelectWidget;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSignUpValidCheck, bool, Success, FString, Email, FString, Reason);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSignUpValidCheck, bool, Success, bool, IsEmailSkip, FString, Email,
+                                              FString, Reason);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSignUpVerifyCode, bool, Success, FString, Reason);
 
@@ -46,6 +49,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DisconnectFromGameServer();
+	UFUNCTION(BlueprintCallable)
+	void LeaveRoom();
 
 	UFUNCTION(BlueprintCallable)
 	void HandleRecvPackets();
@@ -54,7 +59,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HandleSpawnMe();
-	
+	void HandleSpawn(const Protocol::PlayerInfo& PlayerInfo);
+
+	void HandleDespawn(uint64 ObjectId);
+	void HandleDespawn(const Protocol::GS_DESPAWN& DespawnPkt);
+
+
 	// AuthServerAPI
 	UFUNCTION(BlueprintCallable)
 	void LoginToAuthServer(FString Id, FString Password);
@@ -82,7 +92,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CreateNewCharacter(FString Nickname, FString ClassName);
-	
+
 	UFUNCTION(BlueprintCallable)
 	void SelectCharacter(UCharacterSelectWidget* Character);
 
@@ -110,19 +120,23 @@ public:
 	TSharedPtr<PacketSession> AuthServerSession = nullptr;
 
 public:
+	UFUNCTION(BlueprintPure)
+	bool IsConnectToGameServer() { return GameServerSession != nullptr; }
+
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Image")
 	UTexture2D* KnightPortrait;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Image")
 	UTexture2D* ArcherPortrait;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Image")
 	UTexture2D* MagePortrait;
-	
+
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> PlayerClass;
-	
+	TSubclassOf<ACharacter> PlayerClass;
+
 	TMap<uint64, AActor*> Players;
-	
-	Protocol::PlayerInfo PendingPlayerInfo;  // 대기 중인 스폰 정보
+
+	Protocol::PlayerInfo PendingPlayerInfo; // 대기 중인 스폰 정보
 	bool bHasPendingSpawn = false;
 };

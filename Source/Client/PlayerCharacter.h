@@ -3,27 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
-#include "TestPlayer.generated.h"
+#include "GameFramework/Character.h"
+#include "PlayerCharacter.generated.h"
 
 UCLASS()
-class CLIENT_API ATestPlayer : public APawn
+class CLIENT_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
-	ATestPlayer();
+	// Sets default values for this character's properties
+	APlayerCharacter();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+	void MoveForward(float value);
+	void MoveRight(float value);
 };

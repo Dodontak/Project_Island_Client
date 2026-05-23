@@ -181,6 +181,28 @@ struct GS_LEAVE_ROOMDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GS_LEAVE_ROOMDefaultTypeInternal _GS_LEAVE_ROOM_default_instance_;
+PROTOBUF_CONSTEXPR GC_LEAVE_GAME::GC_LEAVE_GAME(
+    ::_pbi::ConstantInitialized) {}
+struct GC_LEAVE_GAMEDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GC_LEAVE_GAMEDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GC_LEAVE_GAMEDefaultTypeInternal() {}
+  union {
+    GC_LEAVE_GAME _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GC_LEAVE_GAMEDefaultTypeInternal _GC_LEAVE_GAME_default_instance_;
+PROTOBUF_CONSTEXPR GS_LEAVE_GAME::GS_LEAVE_GAME(
+    ::_pbi::ConstantInitialized) {}
+struct GS_LEAVE_GAMEDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR GS_LEAVE_GAMEDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~GS_LEAVE_GAMEDefaultTypeInternal() {}
+  union {
+    GS_LEAVE_GAME _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 GS_LEAVE_GAMEDefaultTypeInternal _GS_LEAVE_GAME_default_instance_;
 PROTOBUF_CONSTEXPR GS_SPAWN::GS_SPAWN(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.players_)*/{}
@@ -359,7 +381,7 @@ struct AS_LOGINDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 AS_LOGINDefaultTypeInternal _AS_LOGIN_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[24];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[26];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -451,6 +473,18 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::GS_LEAVE_ROOM, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::GC_LEAVE_GAME, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::GS_LEAVE_GAME, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
@@ -573,18 +607,20 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 70, -1, -1, sizeof(::Protocol::GS_ENTER_ROOM)},
   { 79, -1, -1, sizeof(::Protocol::GC_LEAVE_ROOM)},
   { 85, -1, -1, sizeof(::Protocol::GS_LEAVE_ROOM)},
-  { 91, -1, -1, sizeof(::Protocol::GS_SPAWN)},
-  { 98, -1, -1, sizeof(::Protocol::GS_DESPAWN)},
-  { 105, -1, -1, sizeof(::Protocol::GC_CHAT)},
-  { 113, -1, -1, sizeof(::Protocol::GS_CHAT)},
-  { 121, -1, -1, sizeof(::Protocol::AC_SIGNUP)},
-  { 131, -1, -1, sizeof(::Protocol::AS_SIGNUP)},
-  { 141, -1, -1, sizeof(::Protocol::AC_VERIFY_MAIL_REQ)},
-  { 148, -1, -1, sizeof(::Protocol::AS_VERIFY_MAIL_REQ)},
-  { 158, -1, -1, sizeof(::Protocol::AC_VERIFY_EMAIL_CODE)},
-  { 166, -1, -1, sizeof(::Protocol::AS_VERIFY_EMAIL_CODE)},
-  { 176, -1, -1, sizeof(::Protocol::AC_LOGIN)},
-  { 184, -1, -1, sizeof(::Protocol::AS_LOGIN)},
+  { 91, -1, -1, sizeof(::Protocol::GC_LEAVE_GAME)},
+  { 97, -1, -1, sizeof(::Protocol::GS_LEAVE_GAME)},
+  { 103, -1, -1, sizeof(::Protocol::GS_SPAWN)},
+  { 110, -1, -1, sizeof(::Protocol::GS_DESPAWN)},
+  { 117, -1, -1, sizeof(::Protocol::GC_CHAT)},
+  { 125, -1, -1, sizeof(::Protocol::GS_CHAT)},
+  { 133, -1, -1, sizeof(::Protocol::AC_SIGNUP)},
+  { 143, -1, -1, sizeof(::Protocol::AS_SIGNUP)},
+  { 153, -1, -1, sizeof(::Protocol::AC_VERIFY_MAIL_REQ)},
+  { 160, -1, -1, sizeof(::Protocol::AS_VERIFY_MAIL_REQ)},
+  { 170, -1, -1, sizeof(::Protocol::AC_VERIFY_EMAIL_CODE)},
+  { 178, -1, -1, sizeof(::Protocol::AS_VERIFY_EMAIL_CODE)},
+  { 188, -1, -1, sizeof(::Protocol::AC_LOGIN)},
+  { 196, -1, -1, sizeof(::Protocol::AS_LOGIN)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -600,6 +636,8 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_GS_ENTER_ROOM_default_instance_._instance,
   &::Protocol::_GC_LEAVE_ROOM_default_instance_._instance,
   &::Protocol::_GS_LEAVE_ROOM_default_instance_._instance,
+  &::Protocol::_GC_LEAVE_GAME_default_instance_._instance,
+  &::Protocol::_GS_LEAVE_GAME_default_instance_._instance,
   &::Protocol::_GS_SPAWN_default_instance_._instance,
   &::Protocol::_GS_DESPAWN_default_instance_._instance,
   &::Protocol::_GC_CHAT_default_instance_._instance,
@@ -631,27 +669,27 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   " \001(\005\022\017\n\007room_id\030\002 \001(\005\"^\n\rGS_ENTER_ROOM\022\017"
   "\n\007success\030\001 \001(\010\022,\n\016character_info\030\002 \001(\0132"
   "\024.Protocol.PlayerInfo\022\016\n\006reason\030\003 \001(\t\"\017\n"
-  "\rGC_LEAVE_ROOM\"\017\n\rGS_LEAVE_ROOM\"1\n\010GS_SP"
-  "AWN\022%\n\007players\030\001 \003(\0132\024.Protocol.PlayerIn"
-  "fo\" \n\nGS_DESPAWN\022\022\n\nobject_ids\030\001 \003(\004\"\'\n\007"
-  "GC_CHAT\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"\'\n"
-  "\007GS_CHAT\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"R"
-  "\n\tAC_SIGNUP\022\020\n\010nickname\030\001 \001(\t\022\020\n\010passwor"
-  "d\030\002 \001(\t\022\r\n\005email\030\003 \001(\t\022\022\n\nskip_email\030\004 \001"
-  "(\010\"Q\n\tAS_SIGNUP\022\017\n\007success\030\001 \001(\010\022\022\n\nskip"
-  "_email\030\002 \001(\010\022\017\n\007temp_id\030\003 \001(\t\022\016\n\006reason\030"
-  "\004 \001(\t\"%\n\022AC_VERIFY_MAIL_REQ\022\017\n\007temp_id\030\001"
-  " \001(\t\"W\n\022AS_VERIFY_MAIL_REQ\022\017\n\007success\030\001 "
-  "\001(\010\022\017\n\007temp_id\030\002 \001(\t\022\017\n\007expired\030\003 \001(\010\022\016\n"
-  "\006reason\030\004 \001(\t\"<\n\024AC_VERIFY_EMAIL_CODE\022\017\n"
-  "\007temp_id\030\001 \001(\t\022\023\n\013verify_code\030\002 \001(\t\"Z\n\024A"
-  "S_VERIFY_EMAIL_CODE\022\017\n\007success\030\001 \001(\010\022\017\n\007"
-  "expired\030\002 \001(\010\022\020\n\010nickname\030\003 \001(\t\022\016\n\006reaso"
-  "n\030\004 \001(\t\".\n\010AC_LOGIN\022\020\n\010nickname\030\001 \001(\t\022\020\n"
-  "\010password\030\002 \001(\t\"`\n\010AS_LOGIN\022\017\n\007success\030\001"
-  " \001(\010\022\020\n\010is_block\030\002 \001(\010\022\022\n\nfail_count\030\003 \001"
-  "(\005\022\r\n\005token\030\004 \001(\t\022\016\n\006reason\030\005 \001(\tb\006proto"
-  "3"
+  "\rGC_LEAVE_ROOM\"\017\n\rGS_LEAVE_ROOM\"\017\n\rGC_LE"
+  "AVE_GAME\"\017\n\rGS_LEAVE_GAME\"1\n\010GS_SPAWN\022%\n"
+  "\007players\030\001 \003(\0132\024.Protocol.PlayerInfo\" \n\n"
+  "GS_DESPAWN\022\022\n\nobject_ids\030\001 \003(\004\"\'\n\007GC_CHA"
+  "T\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"\'\n\007GS_CH"
+  "AT\022\017\n\007user_id\030\001 \001(\005\022\013\n\003msg\030\002 \001(\t\"R\n\tAC_S"
+  "IGNUP\022\020\n\010nickname\030\001 \001(\t\022\020\n\010password\030\002 \001("
+  "\t\022\r\n\005email\030\003 \001(\t\022\022\n\nskip_email\030\004 \001(\010\"Q\n\t"
+  "AS_SIGNUP\022\017\n\007success\030\001 \001(\010\022\022\n\nskip_email"
+  "\030\002 \001(\010\022\017\n\007temp_id\030\003 \001(\t\022\016\n\006reason\030\004 \001(\t\""
+  "%\n\022AC_VERIFY_MAIL_REQ\022\017\n\007temp_id\030\001 \001(\t\"W"
+  "\n\022AS_VERIFY_MAIL_REQ\022\017\n\007success\030\001 \001(\010\022\017\n"
+  "\007temp_id\030\002 \001(\t\022\017\n\007expired\030\003 \001(\010\022\016\n\006reaso"
+  "n\030\004 \001(\t\"<\n\024AC_VERIFY_EMAIL_CODE\022\017\n\007temp_"
+  "id\030\001 \001(\t\022\023\n\013verify_code\030\002 \001(\t\"Z\n\024AS_VERI"
+  "FY_EMAIL_CODE\022\017\n\007success\030\001 \001(\010\022\017\n\007expire"
+  "d\030\002 \001(\010\022\020\n\010nickname\030\003 \001(\t\022\016\n\006reason\030\004 \001("
+  "\t\".\n\010AC_LOGIN\022\020\n\010nickname\030\001 \001(\t\022\020\n\010passw"
+  "ord\030\002 \001(\t\"`\n\010AS_LOGIN\022\017\n\007success\030\001 \001(\010\022\020"
+  "\n\010is_block\030\002 \001(\010\022\022\n\nfail_count\030\003 \001(\005\022\r\n\005"
+  "token\030\004 \001(\t\022\016\n\006reason\030\005 \001(\tb\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -659,9 +697,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1441, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1475, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 24,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 26,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -2918,6 +2956,86 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GS_LEAVE_ROOM::GetClassData() 
 
 // ===================================================================
 
+class GC_LEAVE_GAME::_Internal {
+ public:
+};
+
+GC_LEAVE_GAME::GC_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:Protocol.GC_LEAVE_GAME)
+}
+GC_LEAVE_GAME::GC_LEAVE_GAME(const GC_LEAVE_GAME& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  GC_LEAVE_GAME* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Protocol.GC_LEAVE_GAME)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData GC_LEAVE_GAME::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GC_LEAVE_GAME::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata GC_LEAVE_GAME::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[12]);
+}
+
+// ===================================================================
+
+class GS_LEAVE_GAME::_Internal {
+ public:
+};
+
+GS_LEAVE_GAME::GS_LEAVE_GAME(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:Protocol.GS_LEAVE_GAME)
+}
+GS_LEAVE_GAME::GS_LEAVE_GAME(const GS_LEAVE_GAME& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  GS_LEAVE_GAME* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Protocol.GS_LEAVE_GAME)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData GS_LEAVE_GAME::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GS_LEAVE_GAME::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata GS_LEAVE_GAME::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[13]);
+}
+
+// ===================================================================
+
 class GS_SPAWN::_Internal {
  public:
 };
@@ -3101,7 +3219,7 @@ void GS_SPAWN::InternalSwap(GS_SPAWN* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata GS_SPAWN::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[12]);
+      file_level_metadata_Protocol_2eproto[14]);
 }
 
 // ===================================================================
@@ -3294,7 +3412,7 @@ void GS_DESPAWN::InternalSwap(GS_DESPAWN* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata GS_DESPAWN::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[13]);
+      file_level_metadata_Protocol_2eproto[15]);
 }
 
 // ===================================================================
@@ -3524,7 +3642,7 @@ void GC_CHAT::InternalSwap(GC_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata GC_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[14]);
+      file_level_metadata_Protocol_2eproto[16]);
 }
 
 // ===================================================================
@@ -3754,7 +3872,7 @@ void GS_CHAT::InternalSwap(GS_CHAT* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata GS_CHAT::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[15]);
+      file_level_metadata_Protocol_2eproto[17]);
 }
 
 // ===================================================================
@@ -4084,7 +4202,7 @@ void AC_SIGNUP::InternalSwap(AC_SIGNUP* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AC_SIGNUP::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[16]);
+      file_level_metadata_Protocol_2eproto[18]);
 }
 
 // ===================================================================
@@ -4397,7 +4515,7 @@ void AS_SIGNUP::InternalSwap(AS_SIGNUP* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AS_SIGNUP::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[17]);
+      file_level_metadata_Protocol_2eproto[19]);
 }
 
 // ===================================================================
@@ -4600,7 +4718,7 @@ void AC_VERIFY_MAIL_REQ::InternalSwap(AC_VERIFY_MAIL_REQ* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AC_VERIFY_MAIL_REQ::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[18]);
+      file_level_metadata_Protocol_2eproto[20]);
 }
 
 // ===================================================================
@@ -4913,7 +5031,7 @@ void AS_VERIFY_MAIL_REQ::InternalSwap(AS_VERIFY_MAIL_REQ* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AS_VERIFY_MAIL_REQ::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[19]);
+      file_level_metadata_Protocol_2eproto[21]);
 }
 
 // ===================================================================
@@ -5166,7 +5284,7 @@ void AC_VERIFY_EMAIL_CODE::InternalSwap(AC_VERIFY_EMAIL_CODE* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AC_VERIFY_EMAIL_CODE::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[20]);
+      file_level_metadata_Protocol_2eproto[22]);
 }
 
 // ===================================================================
@@ -5479,7 +5597,7 @@ void AS_VERIFY_EMAIL_CODE::InternalSwap(AS_VERIFY_EMAIL_CODE* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AS_VERIFY_EMAIL_CODE::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[21]);
+      file_level_metadata_Protocol_2eproto[23]);
 }
 
 // ===================================================================
@@ -5732,7 +5850,7 @@ void AC_LOGIN::InternalSwap(AC_LOGIN* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AC_LOGIN::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[22]);
+      file_level_metadata_Protocol_2eproto[24]);
 }
 
 // ===================================================================
@@ -6069,7 +6187,7 @@ void AS_LOGIN::InternalSwap(AS_LOGIN* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata AS_LOGIN::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[23]);
+      file_level_metadata_Protocol_2eproto[25]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -6122,6 +6240,14 @@ Arena::CreateMaybeMessage< ::Protocol::GC_LEAVE_ROOM >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::GS_LEAVE_ROOM*
 Arena::CreateMaybeMessage< ::Protocol::GS_LEAVE_ROOM >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::GS_LEAVE_ROOM >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::GC_LEAVE_GAME*
+Arena::CreateMaybeMessage< ::Protocol::GC_LEAVE_GAME >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::GC_LEAVE_GAME >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::GS_LEAVE_GAME*
+Arena::CreateMaybeMessage< ::Protocol::GS_LEAVE_GAME >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::GS_LEAVE_GAME >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Protocol::GS_SPAWN*
 Arena::CreateMaybeMessage< ::Protocol::GS_SPAWN >(Arena* arena) {
