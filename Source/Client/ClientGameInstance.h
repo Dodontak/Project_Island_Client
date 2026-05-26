@@ -15,6 +15,7 @@
 #include "GameFramework/Character.h"
 #include "ClientGameInstance.generated.h"
 
+class AClientMyPlayer;
 class UCharacterSelectWidget;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnSignUpValidCheck, bool, Success, bool, IsEmailSkip, FString, Email,
@@ -133,10 +134,13 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACharacter> PlayerClass;
+	TSubclassOf<ACharacter> MyPlayerClass;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACharacter> OtherPlayerClass;
 
 	TMap<uint64, AActor*> Players;
-
+	AClientMyPlayer* MyPlayer;
 	Protocol::PlayerInfo PendingPlayerInfo; // 대기 중인 스폰 정보
 	bool bHasPendingSpawn = false;
 };

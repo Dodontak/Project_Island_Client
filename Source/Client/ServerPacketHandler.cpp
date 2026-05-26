@@ -3,6 +3,8 @@
 #include "ClientGameInstance.h"
 #include "AuthSession.h"
 #include "GameSession.h"
+#include "Game/ClientMyPlayer.h"
+#include "Game/ClientPlayer.h"
 #include "Kismet/GameplayStatics.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
@@ -109,6 +111,7 @@ void Handle_GS_LEAVE_ROOM(const PacketSessionRef& session, const Protocol::GS_LE
 
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
+		GI->Players.Empty();
 		UGameplayStatics::OpenLevel(GI->GetWorld(), TEXT("TestLevel"));
 	}
 }
@@ -139,6 +142,25 @@ void Handle_GS_DESPAWN(const PacketSessionRef& session, const Protocol::GS_DESPA
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
 		GI->HandleDespawn(pkt);
+	}
+}
+
+void Handle_GS_MOVE(const PacketSessionRef& session, const Protocol::GS_MOVE& pkt)
+{
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		AActor** Found = GI->Players.Find(pkt.object_id());
+		if (Found == nullptr)
+			return;
+
+		AClientPlayer* Player = Cast<AClientPlayer>(*Found);
+		if (Player == nullptr)
+			return;
+
+		if (GI->MyPlayer->GetObjectId() == pkt.object_id())
+			return;
+		Player->SetDestInfo(pkt.dest());
+		Player->SetSpeed(pkt.speed());
 	}
 }
 

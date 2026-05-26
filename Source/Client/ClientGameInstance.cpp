@@ -20,6 +20,7 @@
 #include "Components/WrapBox.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Game/ClientMyPlayer.h"
 
 void UClientGameInstance::Init()
 {
@@ -248,18 +249,25 @@ void UClientGameInstance::HandleSpawnMe()
 		return;
 
 	const uint64 ObjectId = PendingPlayerInfo.id();
+	
 	if (Players.Find(ObjectId) != nullptr)
 		return;
 
 	FVector SpawnLocation(PendingPlayerInfo.pos().x(), PendingPlayerInfo.pos().y(), PendingPlayerInfo.pos().z());
-	ACharacter* SpawnedPawn = World->SpawnActor<ACharacter>(PlayerClass, SpawnLocation, FRotator::ZeroRotator);
-
-	Players.Add(PendingPlayerInfo.id(), SpawnedPawn);
+	AClientMyPlayer* SpawnedCharacter = World->SpawnActor<AClientMyPlayer>(MyPlayerClass, SpawnLocation, FRotator::ZeroRotator);
+	SpawnedCharacter->SetPlayerInfo(PendingPlayerInfo);
+	
+	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		GI->MyPlayer = SpawnedCharacter;
+	}
+	
+	Players.Add(PendingPlayerInfo.id(), SpawnedCharacter);
 
 	APlayerController* PC = World->GetFirstPlayerController();
 	if (PC)
 	{
-		PC->Possess(SpawnedPawn);
+		PC->Possess(SpawnedCharacter);
 	}
 }
 
@@ -273,7 +281,7 @@ void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo)
 		return;
 	
 	FVector SpawnLocation(PlayerInfo.pos().x(), PlayerInfo.pos().y(), PlayerInfo.pos().z());
-	ACharacter* SpawnedPawn = World->SpawnActor<ACharacter>(PlayerClass, SpawnLocation, FRotator::ZeroRotator);
+	ACharacter* SpawnedPawn = World->SpawnActor<ACharacter>(OtherPlayerClass, SpawnLocation, FRotator::ZeroRotator);
 
 	Players.Add(PlayerInfo.id(), SpawnedPawn);
 }
