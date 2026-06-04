@@ -5,6 +5,7 @@
 #include "GameSession.h"
 #include "Game/ClientMyPlayer.h"
 #include "Game/ClientPlayer.h"
+#include "Game/Monster.h"
 #include "Kismet/GameplayStatics.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
@@ -55,9 +56,9 @@ void Handle_GS_CHARACTER_LIST(const PacketSessionRef& session, const Protocol::G
 		FCharacterListResult Characters;
 		if (pkt.success())
 		{
-			for (const Protocol::PlayerInfo& player : pkt.characters())
+			for (const Protocol::ObjectInfo& player : pkt.characters())
 			{
-				Characters.Characters.Add(player);
+				Characters.Objects.Add(player);
 			}
 			GI->OnRequestMyCharacterList.Broadcast(pkt.success(), Characters, "");
 		}
@@ -111,7 +112,7 @@ void Handle_GS_LEAVE_ROOM(const PacketSessionRef& session, const Protocol::GS_LE
 
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
-		GI->Players.Empty();
+		GI->Objects.Empty();
 		UGameplayStatics::OpenLevel(GI->GetWorld(), TEXT("TestLevel"));
 	}
 }
@@ -127,8 +128,8 @@ void Handle_GS_SPAWN(const PacketSessionRef& session, const Protocol::GS_SPAWN& 
 
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
-		for (auto& Player : pkt.players())
-			GI->HandleSpawn(Player);
+		for (auto& Object : pkt.objects())
+			GI->HandleSpawn(Object);
 	}
 	else
 	{
@@ -149,18 +150,27 @@ void Handle_GS_MOVE(const PacketSessionRef& session, const Protocol::GS_MOVE& pk
 {
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
-		AActor** Found = GI->Players.Find(pkt.object_id());
+		AActor** Found = GI->Objects.Find(pkt.object_id());
 		if (Found == nullptr)
 			return;
 
 		AClientPlayer* Player = Cast<AClientPlayer>(*Found);
-		if (Player == nullptr)
-			return;
+		if (Player == nullptr)// 플레이어가 아니라면
+		{
+			AMonster* Monster = Cast<AMonster>(*Found);
+			if (Monster == nullptr)
+				return;
 
-		if (GI->MyPlayer->GetObjectId() == pkt.object_id())
-			return;
-		Player->SetDestInfo(pkt.dest());
-		Player->SetSpeed(pkt.speed());
+			Monster->SetDestInfo(pkt.dest());
+			Monster->SetSpeed(pkt.speed());
+		}
+		else // 플레이어라면
+		{
+			if (GI->MyPlayer->GetObjectId() == pkt.object_id())
+				return;
+			Player->SetDestInfo(pkt.dest());
+			Player->SetSpeed(pkt.speed());
+		}
 	}
 }
 

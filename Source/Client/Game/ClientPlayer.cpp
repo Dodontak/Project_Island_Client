@@ -13,7 +13,7 @@
 AClientPlayer::AClientPlayer()
 {
 	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	// GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -36,15 +36,15 @@ AClientPlayer::AClientPlayer()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
-	PlayerInfo = new Protocol::PlayerInfo();
+	ObjectInfo = new Protocol::ObjectInfo();
 	DestInfo = new Protocol::Position();
 }
 
 AClientPlayer::~AClientPlayer()
 {
-	delete PlayerInfo;
+	delete ObjectInfo;
 	delete DestInfo;
-	PlayerInfo = nullptr;
+	ObjectInfo = nullptr;
 	DestInfo = nullptr;
 }
 
@@ -74,9 +74,9 @@ void AClientPlayer::Tick(float DeltaTime)
 	}
 }
 
-void AClientPlayer::SetPlayerInfo(const Protocol::PlayerInfo& PlayerInfo_)
+void AClientPlayer::SetPlayerInfo(const Protocol::ObjectInfo& PlayerInfo_)
 {
-	PlayerInfo->CopyFrom(PlayerInfo_);
+	ObjectInfo->CopyFrom(PlayerInfo_);
 }
 
 void AClientPlayer::SetDestInfo(const Protocol::Position& DestInfo_)
@@ -86,14 +86,14 @@ void AClientPlayer::SetDestInfo(const Protocol::Position& DestInfo_)
 
 const Protocol::Position& AClientPlayer::GetPlayerPosition() const
 {
-	return PlayerInfo->pos();
+	return ObjectInfo->pos();
 }
 
-uint64 AClientPlayer::GetObjectId()
+uint64 AClientPlayer::GetObjectId() const
 {
-	if (PlayerInfo == nullptr)
+	if (ObjectInfo == nullptr)
 		return 0;
-	return PlayerInfo->id();
+	return ObjectInfo->object_id();
 }
 
 bool AClientPlayer::IsMyPlayer()

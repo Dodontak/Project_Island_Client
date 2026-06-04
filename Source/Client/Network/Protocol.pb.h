@@ -738,22 +738,22 @@ class GS_CHARACTER_LIST final :
     kReasonFieldNumber = 3,
     kSuccessFieldNumber = 1,
   };
-  // repeated .Protocol.PlayerInfo characters = 2;
+  // repeated .Protocol.ObjectInfo characters = 2;
   int characters_size() const;
   private:
   int _internal_characters_size() const;
   public:
   void clear_characters();
-  ::Protocol::PlayerInfo* mutable_characters(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
+  ::Protocol::ObjectInfo* mutable_characters(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
       mutable_characters();
   private:
-  const ::Protocol::PlayerInfo& _internal_characters(int index) const;
-  ::Protocol::PlayerInfo* _internal_add_characters();
+  const ::Protocol::ObjectInfo& _internal_characters(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_characters();
   public:
-  const ::Protocol::PlayerInfo& characters(int index) const;
-  ::Protocol::PlayerInfo* add_characters();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
+  const ::Protocol::ObjectInfo& characters(int index) const;
+  ::Protocol::ObjectInfo* add_characters();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
       characters() const;
 
   // string reason = 3;
@@ -787,7 +787,7 @@ class GS_CHARACTER_LIST final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > characters_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > characters_;
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr reason_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -1740,23 +1740,23 @@ class GS_ENTER_ROOM final :
   std::string* _internal_mutable_reason();
   public:
 
-  // .Protocol.PlayerInfo character_info = 2;
+  // .Protocol.ObjectInfo character_info = 2;
   bool has_character_info() const;
   private:
   bool _internal_has_character_info() const;
   public:
   void clear_character_info();
-  const ::Protocol::PlayerInfo& character_info() const;
-  PROTOBUF_NODISCARD ::Protocol::PlayerInfo* release_character_info();
-  ::Protocol::PlayerInfo* mutable_character_info();
-  void set_allocated_character_info(::Protocol::PlayerInfo* character_info);
+  const ::Protocol::ObjectInfo& character_info() const;
+  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_character_info();
+  ::Protocol::ObjectInfo* mutable_character_info();
+  void set_allocated_character_info(::Protocol::ObjectInfo* character_info);
   private:
-  const ::Protocol::PlayerInfo& _internal_character_info() const;
-  ::Protocol::PlayerInfo* _internal_mutable_character_info();
+  const ::Protocol::ObjectInfo& _internal_character_info() const;
+  ::Protocol::ObjectInfo* _internal_mutable_character_info();
   public:
   void unsafe_arena_set_allocated_character_info(
-      ::Protocol::PlayerInfo* character_info);
-  ::Protocol::PlayerInfo* unsafe_arena_release_character_info();
+      ::Protocol::ObjectInfo* character_info);
+  ::Protocol::ObjectInfo* unsafe_arena_release_character_info();
 
   // bool success = 1;
   void clear_success();
@@ -1776,7 +1776,7 @@ class GS_ENTER_ROOM final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr reason_;
-    ::Protocol::PlayerInfo* character_info_;
+    ::Protocol::ObjectInfo* character_info_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -2378,25 +2378,25 @@ class GS_SPAWN final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayersFieldNumber = 1,
+    kObjectsFieldNumber = 1,
   };
-  // repeated .Protocol.PlayerInfo players = 1;
-  int players_size() const;
+  // repeated .Protocol.ObjectInfo objects = 1;
+  int objects_size() const;
   private:
-  int _internal_players_size() const;
+  int _internal_objects_size() const;
   public:
-  void clear_players();
-  ::Protocol::PlayerInfo* mutable_players(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
-      mutable_players();
+  void clear_objects();
+  ::Protocol::ObjectInfo* mutable_objects(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+      mutable_objects();
   private:
-  const ::Protocol::PlayerInfo& _internal_players(int index) const;
-  ::Protocol::PlayerInfo* _internal_add_players();
+  const ::Protocol::ObjectInfo& _internal_objects(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_objects();
   public:
-  const ::Protocol::PlayerInfo& players(int index) const;
-  ::Protocol::PlayerInfo* add_players();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
-      players() const;
+  const ::Protocol::ObjectInfo& objects(int index) const;
+  ::Protocol::ObjectInfo* add_objects();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+      objects() const;
 
   // @@protoc_insertion_point(class_scope:Protocol.GS_SPAWN)
  private:
@@ -2406,7 +2406,7 @@ class GS_SPAWN final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > players_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > objects_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -4894,38 +4894,38 @@ inline void GS_CHARACTER_LIST::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.GS_CHARACTER_LIST.success)
 }
 
-// repeated .Protocol.PlayerInfo characters = 2;
+// repeated .Protocol.ObjectInfo characters = 2;
 inline int GS_CHARACTER_LIST::_internal_characters_size() const {
   return _impl_.characters_.size();
 }
 inline int GS_CHARACTER_LIST::characters_size() const {
   return _internal_characters_size();
 }
-inline ::Protocol::PlayerInfo* GS_CHARACTER_LIST::mutable_characters(int index) {
+inline ::Protocol::ObjectInfo* GS_CHARACTER_LIST::mutable_characters(int index) {
   // @@protoc_insertion_point(field_mutable:Protocol.GS_CHARACTER_LIST.characters)
   return _impl_.characters_.Mutable(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
 GS_CHARACTER_LIST::mutable_characters() {
   // @@protoc_insertion_point(field_mutable_list:Protocol.GS_CHARACTER_LIST.characters)
   return &_impl_.characters_;
 }
-inline const ::Protocol::PlayerInfo& GS_CHARACTER_LIST::_internal_characters(int index) const {
+inline const ::Protocol::ObjectInfo& GS_CHARACTER_LIST::_internal_characters(int index) const {
   return _impl_.characters_.Get(index);
 }
-inline const ::Protocol::PlayerInfo& GS_CHARACTER_LIST::characters(int index) const {
+inline const ::Protocol::ObjectInfo& GS_CHARACTER_LIST::characters(int index) const {
   // @@protoc_insertion_point(field_get:Protocol.GS_CHARACTER_LIST.characters)
   return _internal_characters(index);
 }
-inline ::Protocol::PlayerInfo* GS_CHARACTER_LIST::_internal_add_characters() {
+inline ::Protocol::ObjectInfo* GS_CHARACTER_LIST::_internal_add_characters() {
   return _impl_.characters_.Add();
 }
-inline ::Protocol::PlayerInfo* GS_CHARACTER_LIST::add_characters() {
-  ::Protocol::PlayerInfo* _add = _internal_add_characters();
+inline ::Protocol::ObjectInfo* GS_CHARACTER_LIST::add_characters() {
+  ::Protocol::ObjectInfo* _add = _internal_add_characters();
   // @@protoc_insertion_point(field_add:Protocol.GS_CHARACTER_LIST.characters)
   return _add;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
 GS_CHARACTER_LIST::characters() const {
   // @@protoc_insertion_point(field_list:Protocol.GS_CHARACTER_LIST.characters)
   return _impl_.characters_;
@@ -5325,24 +5325,24 @@ inline void GS_ENTER_ROOM::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.GS_ENTER_ROOM.success)
 }
 
-// .Protocol.PlayerInfo character_info = 2;
+// .Protocol.ObjectInfo character_info = 2;
 inline bool GS_ENTER_ROOM::_internal_has_character_info() const {
   return this != internal_default_instance() && _impl_.character_info_ != nullptr;
 }
 inline bool GS_ENTER_ROOM::has_character_info() const {
   return _internal_has_character_info();
 }
-inline const ::Protocol::PlayerInfo& GS_ENTER_ROOM::_internal_character_info() const {
-  const ::Protocol::PlayerInfo* p = _impl_.character_info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerInfo&>(
-      ::Protocol::_PlayerInfo_default_instance_);
+inline const ::Protocol::ObjectInfo& GS_ENTER_ROOM::_internal_character_info() const {
+  const ::Protocol::ObjectInfo* p = _impl_.character_info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
+      ::Protocol::_ObjectInfo_default_instance_);
 }
-inline const ::Protocol::PlayerInfo& GS_ENTER_ROOM::character_info() const {
+inline const ::Protocol::ObjectInfo& GS_ENTER_ROOM::character_info() const {
   // @@protoc_insertion_point(field_get:Protocol.GS_ENTER_ROOM.character_info)
   return _internal_character_info();
 }
 inline void GS_ENTER_ROOM::unsafe_arena_set_allocated_character_info(
-    ::Protocol::PlayerInfo* character_info) {
+    ::Protocol::ObjectInfo* character_info) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.character_info_);
   }
@@ -5354,9 +5354,9 @@ inline void GS_ENTER_ROOM::unsafe_arena_set_allocated_character_info(
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.GS_ENTER_ROOM.character_info)
 }
-inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::release_character_info() {
+inline ::Protocol::ObjectInfo* GS_ENTER_ROOM::release_character_info() {
   
-  ::Protocol::PlayerInfo* temp = _impl_.character_info_;
+  ::Protocol::ObjectInfo* temp = _impl_.character_info_;
   _impl_.character_info_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -5369,27 +5369,27 @@ inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::release_character_info() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::unsafe_arena_release_character_info() {
+inline ::Protocol::ObjectInfo* GS_ENTER_ROOM::unsafe_arena_release_character_info() {
   // @@protoc_insertion_point(field_release:Protocol.GS_ENTER_ROOM.character_info)
   
-  ::Protocol::PlayerInfo* temp = _impl_.character_info_;
+  ::Protocol::ObjectInfo* temp = _impl_.character_info_;
   _impl_.character_info_ = nullptr;
   return temp;
 }
-inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::_internal_mutable_character_info() {
+inline ::Protocol::ObjectInfo* GS_ENTER_ROOM::_internal_mutable_character_info() {
   
   if (_impl_.character_info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::PlayerInfo>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
     _impl_.character_info_ = p;
   }
   return _impl_.character_info_;
 }
-inline ::Protocol::PlayerInfo* GS_ENTER_ROOM::mutable_character_info() {
-  ::Protocol::PlayerInfo* _msg = _internal_mutable_character_info();
+inline ::Protocol::ObjectInfo* GS_ENTER_ROOM::mutable_character_info() {
+  ::Protocol::ObjectInfo* _msg = _internal_mutable_character_info();
   // @@protoc_insertion_point(field_mutable:Protocol.GS_ENTER_ROOM.character_info)
   return _msg;
 }
-inline void GS_ENTER_ROOM::set_allocated_character_info(::Protocol::PlayerInfo* character_info) {
+inline void GS_ENTER_ROOM::set_allocated_character_info(::Protocol::ObjectInfo* character_info) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.character_info_);
@@ -5480,41 +5480,41 @@ inline void GS_ENTER_ROOM::set_allocated_reason(std::string* reason) {
 
 // GS_SPAWN
 
-// repeated .Protocol.PlayerInfo players = 1;
-inline int GS_SPAWN::_internal_players_size() const {
-  return _impl_.players_.size();
+// repeated .Protocol.ObjectInfo objects = 1;
+inline int GS_SPAWN::_internal_objects_size() const {
+  return _impl_.objects_.size();
 }
-inline int GS_SPAWN::players_size() const {
-  return _internal_players_size();
+inline int GS_SPAWN::objects_size() const {
+  return _internal_objects_size();
 }
-inline ::Protocol::PlayerInfo* GS_SPAWN::mutable_players(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.GS_SPAWN.players)
-  return _impl_.players_.Mutable(index);
+inline ::Protocol::ObjectInfo* GS_SPAWN::mutable_objects(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.GS_SPAWN.objects)
+  return _impl_.objects_.Mutable(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
-GS_SPAWN::mutable_players() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.GS_SPAWN.players)
-  return &_impl_.players_;
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+GS_SPAWN::mutable_objects() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.GS_SPAWN.objects)
+  return &_impl_.objects_;
 }
-inline const ::Protocol::PlayerInfo& GS_SPAWN::_internal_players(int index) const {
-  return _impl_.players_.Get(index);
+inline const ::Protocol::ObjectInfo& GS_SPAWN::_internal_objects(int index) const {
+  return _impl_.objects_.Get(index);
 }
-inline const ::Protocol::PlayerInfo& GS_SPAWN::players(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.GS_SPAWN.players)
-  return _internal_players(index);
+inline const ::Protocol::ObjectInfo& GS_SPAWN::objects(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.GS_SPAWN.objects)
+  return _internal_objects(index);
 }
-inline ::Protocol::PlayerInfo* GS_SPAWN::_internal_add_players() {
-  return _impl_.players_.Add();
+inline ::Protocol::ObjectInfo* GS_SPAWN::_internal_add_objects() {
+  return _impl_.objects_.Add();
 }
-inline ::Protocol::PlayerInfo* GS_SPAWN::add_players() {
-  ::Protocol::PlayerInfo* _add = _internal_add_players();
-  // @@protoc_insertion_point(field_add:Protocol.GS_SPAWN.players)
+inline ::Protocol::ObjectInfo* GS_SPAWN::add_objects() {
+  ::Protocol::ObjectInfo* _add = _internal_add_objects();
+  // @@protoc_insertion_point(field_add:Protocol.GS_SPAWN.objects)
   return _add;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
-GS_SPAWN::players() const {
-  // @@protoc_insertion_point(field_list:Protocol.GS_SPAWN.players)
-  return _impl_.players_;
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+GS_SPAWN::objects() const {
+  // @@protoc_insertion_point(field_list:Protocol.GS_SPAWN.objects)
+  return _impl_.objects_;
 }
 
 // -------------------------------------------------------------------

@@ -18,7 +18,7 @@ void AClientMyPlayer::Tick(float DeltaTime)
 	{
 		FVector Location = GetActorLocation();
 		FRotator Rotation = GetActorRotation();
-		Protocol::Position* Pos = PlayerInfo->mutable_pos();
+		Protocol::Position* Pos = ObjectInfo->mutable_pos();
 
 		Pos->set_x(Location.X);
 		Pos->set_y(Location.Y);
@@ -35,7 +35,7 @@ void AClientMyPlayer::Tick(float DeltaTime)
 
 		Protocol::GC_MOVE MovePacket;
 		Protocol::Position* Pos = MovePacket.mutable_dest();
-		Pos->CopyFrom(PlayerInfo->pos());
+		Pos->CopyFrom(ObjectInfo->pos());
 		MovePacket.set_speed(GetVelocity().Length());
 
 		Cast<UClientGameInstance>(GWorld->GetGameInstance())->SendPacket(

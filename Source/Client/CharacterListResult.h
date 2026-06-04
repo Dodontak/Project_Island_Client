@@ -9,5 +9,5 @@ struct FCharacterListResult
 {
 	GENERATED_BODY()
 
-	TArray<Protocol::PlayerInfo> Characters;
+	TArray<Protocol::ObjectInfo> Objects;
 };

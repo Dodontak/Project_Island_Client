@@ -21,6 +21,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Game/ClientMyPlayer.h"
+#include "Game/Monster.h"
 
 void UClientGameInstance::Init()
 {
@@ -89,7 +90,7 @@ void UClientGameInstance::LeaveRoom()
 {
 	if (GameServerSession == nullptr)
 		return;
-	
+
 	Protocol::GC_LEAVE_ROOM LeaveRoomPkt;
 	GameServerSession->SendPacket(ServerPacketHandler::MakeSendBuffer(LeaveRoomPkt));
 }
@@ -170,7 +171,7 @@ void UClientGameInstance::HandleMyCharacterListResponse(UUserWidget* WrapBox, UU
 	if (Box == nullptr)
 		return;
 
-	for (int32 Index = 0; Index < Characters.Characters.Num(); Index++)
+	for (int32 Index = 0; Index < Characters.Objects.Num(); Index++)
 	{
 		UCharacterSelectWidget* CharacterWidget =
 			CreateWidget<UCharacterSelectWidget>(GetWorld(), CharacterWidgetClass);
@@ -178,7 +179,7 @@ void UClientGameInstance::HandleMyCharacterListResponse(UUserWidget* WrapBox, UU
 		UImage* PortraitImage = Cast<UImage>(CharacterWidget->GetWidgetFromName(TEXT("Portrait")));
 		if (PortraitImage == nullptr) continue;
 
-		switch (Characters.Characters[Index].playertype())
+		switch (Characters.Objects[Index].template_id() & 0x000000ff)
 		{
 		case Protocol::PLAYER_TYPE_ARCHER:
 			PortraitImage->SetBrushFromTexture(ArcherPortrait);
@@ -194,7 +195,7 @@ void UClientGameInstance::HandleMyCharacterListResponse(UUserWidget* WrapBox, UU
 		}
 		UTextBlock* Nickname = Cast<UTextBlock>(CharacterWidget->GetWidgetFromName(TEXT("NickName")));
 		if (Nickname)
-			Nickname->SetText(FText::FromString(Characters.Characters[Index].name().c_str()));
+			Nickname->SetText(FText::FromString(Characters.Objects[Index].name().c_str()));
 		CharacterWidget->Index = Index;
 		CharacterWidget->Nickname = Nickname->GetText().ToString();;
 		Box->AddChildToWrapBox(CharacterWidget);
@@ -248,21 +249,23 @@ void UClientGameInstance::HandleSpawnMe()
 	if (World == nullptr)
 		return;
 
-	const uint64 ObjectId = PendingPlayerInfo.id();
-	
-	if (Players.Find(ObjectId) != nullptr)
+	const uint64 ObjectId = PendingPlayerInfo.object_id();
+
+	if (Objects.Find(ObjectId) != nullptr)
 		return;
 
 	FVector SpawnLocation(PendingPlayerInfo.pos().x(), PendingPlayerInfo.pos().y(), PendingPlayerInfo.pos().z());
-	AClientMyPlayer* SpawnedCharacter = World->SpawnActor<AClientMyPlayer>(MyPlayerClass, SpawnLocation, FRotator::ZeroRotator);
+	AClientMyPlayer* SpawnedCharacter = World->SpawnActor<AClientMyPlayer>(
+		MyPlayerClass, SpawnLocation, FRotator::ZeroRotator);
+
 	SpawnedCharacter->SetPlayerInfo(PendingPlayerInfo);
-	
+
 	if (UClientGameInstance* GI = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
 	{
 		GI->MyPlayer = SpawnedCharacter;
 	}
-	
-	Players.Add(PendingPlayerInfo.id(), SpawnedCharacter);
+
+	Objects.Add(PendingPlayerInfo.object_id(), SpawnedCharacter);
 
 	APlayerController* PC = World->GetFirstPlayerController();
 	if (PC)
@@ -271,7 +274,7 @@ void UClientGameInstance::HandleSpawnMe()
 	}
 }
 
-void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo)
+void UClientGameInstance::HandleSpawn(const Protocol::ObjectInfo& ObjectInfo)
 {
 	if (GameServerSession == nullptr)
 		return;
@@ -279,26 +282,51 @@ void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo)
 	auto* World = GetWorld();
 	if (World == nullptr)
 		return;
-	
-	FVector SpawnLocation(PlayerInfo.pos().x(), PlayerInfo.pos().y(), PlayerInfo.pos().z());
-	ACharacter* SpawnedPawn = World->SpawnActor<ACharacter>(OtherPlayerClass, SpawnLocation, FRotator::ZeroRotator);
+	FVector SpawnLocation(ObjectInfo.pos().x(), ObjectInfo.pos().y(), 200);
+	ACharacter* SpawnedPawn;
+	switch ((ObjectInfo.template_id() & 0x0000FF00) >> 8)
+	{	
+	case Protocol::CreatureType::CREATURE_TYPE_MONSTER:
+		switch (ObjectInfo.template_id() & 0x000000FF)
+		{
+		case Protocol::MonsterType::MONSTER_TYPE_SKELETON:
+			SpawnedPawn = World->SpawnActor<ACharacter>(MonsterSkeletonClass, SpawnLocation, FRotator::ZeroRotator);
+			break;
+		case Protocol::MonsterType::MONSTER_TYPE_WEREWOLF:
+			SpawnedPawn = World->SpawnActor<ACharacter>(MonsterWerewolfClass, SpawnLocation, FRotator::ZeroRotator);
+			break;
+		case Protocol::MonsterType::MONSTER_TYPE_STONEGOLEM:
+			SpawnedPawn = World->SpawnActor<ACharacter>(MonsterStoneGolemClass, SpawnLocation, FRotator::ZeroRotator);
+			break;
+		default:
+			SpawnedPawn = World->SpawnActor<ACharacter>(MonsterSkeletonClass, SpawnLocation, FRotator::ZeroRotator);
+			break;
+		}
+		break;
+	case Protocol::CreatureType::CREATURE_TYPE_PLAYER:
+		SpawnedPawn = World->SpawnActor<ACharacter>(OtherPlayerClass, SpawnLocation, FRotator::ZeroRotator);
+		break;
+	default:
+		SpawnedPawn = World->SpawnActor<ACharacter>(MonsterSkeletonClass, SpawnLocation, FRotator::ZeroRotator);
+		break;
+	}
 
-	Players.Add(PlayerInfo.id(), SpawnedPawn);
+	Objects.Add(ObjectInfo.object_id(), SpawnedPawn);
 }
 
 void UClientGameInstance::HandleDespawn(uint64 ObjectId)
 {
 	if (GameServerSession == nullptr)
 		return;
-	
+
 	auto* World = GetWorld();
 	if (World == nullptr)
 		return;
-	
-	AActor** FindActor = Players.Find(ObjectId);
+
+	AActor** FindActor = Objects.Find(ObjectId);
 	if (FindActor == nullptr)
 		return;
-	
+
 	World->DestroyActor(*FindActor);
 }
 

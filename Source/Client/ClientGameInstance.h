@@ -60,7 +60,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HandleSpawnMe();
-	void HandleSpawn(const Protocol::PlayerInfo& PlayerInfo);
+	void HandleSpawn(const Protocol::ObjectInfo& ObjectInfo);
 
 	void HandleDespawn(uint64 ObjectId);
 	void HandleDespawn(const Protocol::GS_DESPAWN& DespawnPkt);
@@ -139,8 +139,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACharacter> OtherPlayerClass;
 
-	TMap<uint64, AActor*> Players;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACharacter> MonsterSkeletonClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACharacter> MonsterWerewolfClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACharacter> MonsterStoneGolemClass;
+	
+	TMap<uint64, AActor*> Objects;
 	AClientMyPlayer* MyPlayer;
-	Protocol::PlayerInfo PendingPlayerInfo; // 대기 중인 스폰 정보
+	Protocol::ObjectInfo PendingPlayerInfo; // 대기 중인 스폰 정보
 	bool bHasPendingSpawn = false;
 };

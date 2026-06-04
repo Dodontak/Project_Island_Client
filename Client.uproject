@@ -21,6 +21,10 @@
 			"TargetAllowList": [
 				"Editor"
 			]
+		},
+		{
+			"Name": "ExportNavMesh",
+			"Enabled": false
 		}
 	]
 }

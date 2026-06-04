@@ -4,45 +4,44 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Logging/LogMacros.h"
-#include "ClientPlayer.generated.h"
+#include "Monster.generated.h"
 
 namespace Protocol
 {
-	class Position;
 	class ObjectInfo;
+	class Position;
 }
 
-class USpringArmComponent;
-class UCameraComponent;
-class UInputAction;
-struct FInputActionValue;
-
 UCLASS()
-class CLIENT_API AClientPlayer : public ACharacter
+class CLIENT_API AMonster : public ACharacter
 {
 	GENERATED_BODY()
-	
+
 public:
-	/** Constructor */
-	AClientPlayer();
-	virtual ~AClientPlayer() override;
-	
+	// Sets default values for this character's properties
+	AMonster();
+	virtual ~AMonster() override;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 public:
+	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-public:
-	bool IsMyPlayer();
-	
-	const Protocol::Position& GetPlayerPosition() const;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	UFUNCTION(BlueprintPure)
 	float GetSpeed() const { return Speed; }
+
 	uint64 GetObjectId() const;
-	
-	void SetPlayerInfo(const Protocol::ObjectInfo& PlayerInfo_);
+
+	void SetMonsterInfo(const Protocol::ObjectInfo& MonsterInfo_);
 	void SetDestInfo(const Protocol::Position& DestInfo_);
 	void SetSpeed(float Speed_) { Speed = Speed_; }
-	
+
 protected:
 	Protocol::ObjectInfo* ObjectInfo;
 	Protocol::Position* DestInfo;
